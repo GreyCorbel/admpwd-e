@@ -1,2 +1,2 @@
 # laps-e
-LAPS.E support tools
+This projects contains LAPS.E client and support tools
