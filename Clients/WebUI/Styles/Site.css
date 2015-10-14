@@ -1,0 +1,334 @@
+﻿html {
+    background-color: #e2e2e2;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #fff;
+    color: #333;
+    font-size: .85em;
+    font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    color: #333;
+    outline: none;
+    padding-left: 3px;
+    padding-right: 3px;
+    text-decoration: underline;
+}
+
+    a:link, a:visited,
+    a:active, a:hover {
+        color: #333;
+    }
+
+    a:hover {
+        background-color: #c7d1d6;
+    }
+
+header, footer, hgroup,
+nav, section {
+    display: block;
+}
+
+.float-left {
+    float: left;
+}
+
+.float-right {
+    float: right;
+}
+
+.clear-fix:after {
+    content: ".";
+    clear: both;
+    display: block;
+    height: 0;
+    visibility: hidden;
+}
+
+h1, h2, h3,
+h4, h5, h6 {
+    color: #000;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+h1 {
+    font-size: 1.75em;
+}
+
+h2 {
+    font-size: 1.5em;
+}
+
+/* main layout
+----------------------------------------------------------*/
+.content-wrapper {
+    margin: 0 auto;
+    max-width: 960px;
+}
+
+#body {
+    background-color: #efeeef;
+    clear: both;
+    padding-bottom: 35px;
+}
+
+.main-content {
+    padding-left: 10px;
+    padding-top: 30px;
+}
+
+header .content-wrapper {
+    padding-top: 20px;
+}
+
+footer {
+    clear: both;
+    background-color: #e2e2e2;
+    font-size: .8em;
+    height: 100px;
+}
+
+
+/* site title
+----------------------------------------------------------*/
+.site-title {
+    color: #c8c8c8;
+    font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+    font-size: 2.3em;
+    margin: 0;
+}
+
+    .site-title a, .site-title a:hover, .site-title a:active {
+        background: none;
+        color: #c8c8c8;
+        outline: none;
+        text-decoration: none;
+    }
+
+
+/* page elements
+----------------------------------------------------------*/
+/* featured */
+.featured {
+    background-color: #fff;
+}
+
+    .featured .content-wrapper {
+        background-color: #7ac0da;
+        color: #3e5667;
+        padding: 20px 40px 30px 40px;
+    }
+
+    .featured hgroup.title h1, .featured hgroup.title h2 {
+        color: #fff;
+    }
+
+    .featured p {
+        font-size: 1.1em;
+    }
+
+/* page titles */
+hgroup.title {
+}
+
+    hgroup.title h1, hgroup.title h2 {
+        display: inline;
+    }
+
+/* forms */
+label {
+    display: block;
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+    label.checkbox {
+        display: inline;
+    }
+
+input, textarea {
+    border: 1px solid #e2e2e2;
+    background: #fff;
+    color: #333;
+    font-size: 1.2em;
+    margin: 5px 0 6px 0;
+    padding: 5px;
+    width: 300px;
+}
+
+textarea {
+    font-family: inherit;
+    width: 500px;
+}
+
+    input:focus, textarea:focus {
+        border: 1px solid #7ac0da;
+    }
+
+input[type="checkbox"] {
+    background: transparent;
+    border: inherit;
+    width: auto;
+}
+
+input[type="submit"],
+input[type="button"],
+button {
+    background-color: #d3dce0;
+    border: 1px solid #787878;
+    cursor: pointer;
+    font-size: 1.2em;
+    font-weight: 600;
+    padding: 7px;
+    margin-right: 8px;
+    width: auto;
+}
+
+td input[type="submit"],
+td input[type="button"],
+td button {
+    font-size: 1em;
+    padding: 4px;
+    margin-right: 4px;
+}
+
+/* tables
+----------------------------------------------------------*/
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin-top: 0.75em;
+    border: 0 none;
+}
+
+th {
+    font-size: 1.2em;
+    text-align: left;
+    border: none 0px;
+    padding-left: 0;
+}
+
+    th a {
+        display: block;
+        position: relative;
+    }
+
+        th a:link, th a:visited, th a:active, th a:hover {
+            color: #333;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 0;
+        }
+
+        th a:hover {
+            color: #000;
+        }
+
+td {
+    padding: 0.25em 2em 0.25em 0em;
+    border: 0 none;
+}
+
+
+
+
+/* START: custom content formatting */
+.controlHeader {
+    height: 25px;
+    padding-top: 6px;
+    padding-left: 22px;
+    color: #fff;
+    font-weight: bold;
+    background-color: #7ac0da;
+}
+
+.controlTable {
+    margin: 0px;
+    padding: 0px;
+}
+
+    .controlTable tr {
+        margin: 0px;
+        padding: 0px;
+    }
+
+    .controlTable td {
+        margin: 0px;
+        padding: 0px;
+        height: 20px;
+    }
+
+    .controlTable .controlLabel {
+        width: 220px;
+        background-color: #E4E4E4;
+        text-align: right;
+        padding-right: 5px;
+        font-size: 12px;
+    }
+
+        .controlTable .controlLabel.bold {
+            font-weight: bold;
+        }
+
+    .controlTable .controlValue {
+        width: 400px;
+        padding-left: 4px;
+        border: solid 2px #E4E4E4;
+    }
+
+    .controlTable .controlValueHistory {
+        width: 500px;
+        padding-left: 4px;
+        border: solid 2px #E4E4E4;
+    }
+
+        .controlTable .controlValueHistory table {
+            font-size: 0.85em;
+            border: 1px solid #7ac0da;
+        }
+
+        .controlTable .controlValueHistory td {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        .controlTable .controlValueHistory .header {
+            background-color: #7ac0da;
+            color: #ffffff;
+            padding: 3px 15px 3px 15px;
+        }
+
+    .controlTable .controlStyle {
+        width: 380px;
+        border-width: 0px;
+        font-size: 12px;
+    }
+
+.errorMessage {
+    color: White;
+    font-weight: bold;
+    background-color: #CC0001;
+    margin-top: 0px;
+    padding: 5px;
+    padding-left: 22px;
+}
+
+.okMessage {
+    color: White;
+    font-weight: bold;
+    background-color: Green;
+    margin-top: 10px;
+    padding: 5px;
+}
+
+.keyValueMultiline {
+    font-size: 12px;
+}
+/* END: custom content formatting */
