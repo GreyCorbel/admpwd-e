@@ -76,38 +76,6 @@ namespace AdmPwd.Portal.Controls
                 return;
             }
 
-            //// read configuration if UserDetailsVisible are visible
-            //bool areUserDetailsVisible = false;
-            //if (ConfigurationManager.AppSettings["AdmPwd.AreUserDetailsVisible"] != null && ConfigurationManager.AppSettings["AdmPwd.AreUserDetailsVisible"] != string.Empty)
-            //    if (!bool.TryParse(ConfigurationManager.AppSettings["AdmPwd.AreUserDetailsVisible"].ToString(), out areUserDetailsVisible))
-            //        areUserDetailsVisible = false;
-
-            //if (areUserDetailsVisible)
-            //{
-            //    try
-            //    {
-            //        this.LDAPUserInfo = LDAPUtilities.GetUserInfo(currentUserIdentity[0], currentUserIdentity[1]);
-            //    }
-            //    catch (LDAPNoEntryFoundException)
-            //    {
-            //        this.LabelLDAPResult.Text = Messages.Errors_LDAPNoEntryFoundException;
-            //        this.PanelLDAPResult.Visible = true;
-            //        return;
-            //    }
-            //    catch (LDAPMoreThanOneEntryFoundException)
-            //    {
-            //        this.LabelLDAPResult.Text = Messages.Errors_LDAPMoreThanOneEntryFoundException;
-            //        this.PanelLDAPResult.Visible = true;
-            //        return;
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        this.LabelLDAPResult.Text = Messages.Errors_LDAPNotAvailable + "! " + Messages.Errors_ErrorMessage + ": " + ex.Message;
-            //        this.PanelLDAPResult.Visible = true;
-            //        return;
-            //    }
-            //}
-
             this.UserIdentificationLoaded = true;
             SetControlState();
         }
