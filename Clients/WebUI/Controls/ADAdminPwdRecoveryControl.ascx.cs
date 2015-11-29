@@ -25,8 +25,6 @@ namespace AdmPwd.Portal.Controls
             this.btnRecoverySubmit.Attributes.Add("style", "color: black; background-color: #d3dce0;");
             this.PanelAdminPasswordData.Visible = false;
             this.textAdminPassword.Text = string.Empty;
-
-
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -49,7 +47,6 @@ namespace AdmPwd.Portal.Controls
             }
             catch (Exception)
             {
-
             }
         }
 
@@ -94,6 +91,7 @@ namespace AdmPwd.Portal.Controls
                 catch (AutodiscoverException ex)
                 {
                     this.labelResult.Text = Messages.Errors_ServiceNotAvailable + " - " + ex.Message;
+                    this.PanelResult.CssClass = "errorMessage";
                     this.PanelResult.Visible = true;
                     return;
                 }
@@ -117,6 +115,7 @@ namespace AdmPwd.Portal.Controls
                             this.labelResult.Text = Messages.Errors_CannotRetrievePassword + ": " + faex.Message;
                             break;
                     }
+                    this.PanelResult.CssClass = "errorMessage";
                     this.PanelResult.Visible = true;
                     return;
                 }
@@ -194,6 +193,7 @@ namespace AdmPwd.Portal.Controls
                         {
                             case IssueType.ComputerNotFound:
                                 this.labelResult.Text = Messages.Errors_ADNoComputerFoundException + " " + faex.Message;
+                                this.PanelResult.CssClass = "errorMessage";
                                 break;
                             case IssueType.ComputerAmbiguous:
                                 this.labelResult.Text = Messages.Errors_MultipleComputerObjectsFound + ": " + faex.Message;
@@ -208,13 +208,17 @@ namespace AdmPwd.Portal.Controls
                                 this.labelResult.Text = Messages.Errors_CannotResetPassword + ": " + faex.Message;
                                 break;
                         }
+                        this.PanelResult.CssClass = "errorMessage";
                         this.PanelResult.Visible = true;
+                        defaultPage.ShowBackToNewRequestButton();
                         return;
                     }
                     catch (Exception ex)
                     {
                         labelResult.Text = Messages.Errors_ServiceNotAvailable + " - " + ex.Message;
+                        this.PanelResult.CssClass = "errorMessage";
                         PanelResult.Visible = true;
+                        defaultPage.ShowBackToNewRequestButton();
                         return;
                     }
 
