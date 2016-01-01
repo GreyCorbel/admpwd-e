@@ -1,5 +1,5 @@
 ﻿using AdmPwd.Portal.Utilities;
-using AdmPwd.ServiceUtils.PdsProxy;
+using AdmPwd.PDSUtils.PdsProxy;
 using AdmPwd.Types;
 using Resources;
 using System;
@@ -27,7 +27,7 @@ namespace AdmPwd.Portal.Controls
                 try
                 {
                     // get supported key sizes
-                    ddlKeySize.DataSource = AdmPwd.ServiceUtils.PdsWrapper.GetSupportedKeySizes();
+                    ddlKeySize.DataSource = PDSUtils.PdsWrapper.GetSupportedKeySizes();
                     ddlKeySize.DataBind();
                 }
                 catch (AutodiscoverException ex)
@@ -51,7 +51,7 @@ namespace AdmPwd.Portal.Controls
                 try
                 {
                     // get public keys list
-                    publicKeys = AdmPwd.ServiceUtils.PdsWrapper.GetPublicKeys();
+                    publicKeys = PDSUtils.PdsWrapper.GetPublicKeys();
                 }
                 catch (AutodiscoverException ex)
                 {
@@ -89,7 +89,7 @@ namespace AdmPwd.Portal.Controls
                 try
                 {
                     // save crypto keypair
-                    AdmPwd.ServiceUtils.PdsWrapper.GenerateKeyPair(int.Parse(ddlKeySize.SelectedValue));
+                    PDSUtils.PdsWrapper.GenerateKeyPair(int.Parse(ddlKeySize.SelectedValue));
                 }
                 catch (AutodiscoverException ex)
                 {

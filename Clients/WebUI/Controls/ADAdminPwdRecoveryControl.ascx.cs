@@ -1,5 +1,5 @@
 ﻿using AdmPwd.Portal.Utilities;
-using AdmPwd.ServiceUtils.PdsProxy;
+using AdmPwd.PDSUtils.PdsProxy;
 using AdmPwd.Types;
 using Resources;
 using System;
@@ -86,7 +86,7 @@ namespace AdmPwd.Portal.Controls
             {
                 try
                 {
-                    data = AdmPwd.ServiceUtils.PdsWrapper.GetPassword(this.cboForestNames.Text, this.textComputerName.Text, isPasswordHistoryVisible); //or false if we don't need password history
+                    data = PDSUtils.PdsWrapper.GetPassword(this.cboForestNames.Text, this.textComputerName.Text, isPasswordHistoryVisible); //or false if we don't need password history
                 }
                 catch (AutodiscoverException ex)
                 {
@@ -185,7 +185,7 @@ namespace AdmPwd.Portal.Controls
                 {
                     try
                     {
-                        rslt = AdmPwd.ServiceUtils.PdsWrapper.ResetPassword(this.cboForestNames.Text, this.textComputerName.Text, newExpirationDate);
+                        rslt = PDSUtils.PdsWrapper.ResetPassword(this.cboForestNames.Text, this.textComputerName.Text, newExpirationDate);
                     }
                     catch (System.ServiceModel.FaultException<ServiceFault> faex)
                     {

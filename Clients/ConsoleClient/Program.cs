@@ -1,5 +1,5 @@
 ﻿using System;
-using AdmPwd.ServiceUtils;
+using AdmPwd.PDSUtils;
 using System.ServiceModel;
 
 namespace ConsoleClient
