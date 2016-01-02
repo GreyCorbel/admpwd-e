@@ -1,4 +1,4 @@
-# laps-e
+# LAPS.E
 This projects contains LAPS.E client and support tools
 
 Content:
