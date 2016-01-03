@@ -1,4 +1,4 @@
-# laps-e
+# LAPS.E
 This projects contains LAPS.E client and support tools
 
 Content:
@@ -9,3 +9,4 @@ Content:
 - KeyStores:
   - Contains source for AdmPwd.PDS.KeyStore.IKeyStore interface and implementation of PDS keystore based on Azure KeyVault
   - Provided as reference implementation for other types of key stores, such as key stores based on HSM
+- LAPS.E AD schema definition file (LAPS.E.ldf), so anyone can see what changes are done in AD schema, and extend the schema manually, if needed.
