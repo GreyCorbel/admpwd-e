@@ -86,7 +86,7 @@ namespace AdmPwd.Portal.Controls
             {
                 try
                 {
-                    data = PDSUtils.PdsWrapper.GetPassword(this.cboForestNames.Text, this.textComputerName.Text, isPasswordHistoryVisible); //or false if we don't need password history
+                    data = PDSUtils.PdsWrapper.GetPassword(this.cboForestNames.Text, this.textComputerName.Text, isPasswordHistoryVisible, false); //or false if we don't need password history
                 }
                 catch (AutodiscoverException ex)
                 {
@@ -185,7 +185,7 @@ namespace AdmPwd.Portal.Controls
                 {
                     try
                     {
-                        rslt = PDSUtils.PdsWrapper.ResetPassword(this.cboForestNames.Text, this.textComputerName.Text, newExpirationDate);
+                        rslt = PDSUtils.PdsWrapper.ResetPassword(this.cboForestNames.Text, this.textComputerName.Text, newExpirationDate.ToUniversalTime());
                     }
                     catch (System.ServiceModel.FaultException<ServiceFault> faex)
                     {
