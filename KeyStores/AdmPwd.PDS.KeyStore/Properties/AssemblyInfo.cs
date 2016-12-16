@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("AdmPwd.Service.KeyStore")]
-[assembly: AssemblyDescription("Package contains class library that define IKeyStore interface. Impelement this interface if you want to implement custom keystore for LAPS-E PDS. Sample implementation of key store based on Azure KeyVault to be found on https://github.com/jformacek/laps-e")]
+[assembly: AssemblyTitle("AdmPwd.PDS.KeyStore")]
+[assembly: AssemblyDescription("Package contains class library that define IKeyStore interface. Impelement this interface if you want to implement custom keystore for AdmPwd.E PDS. Sample implementation of key store based on Azure KeyVault to be found on https://github.com/jformacek/admpwd-e/tree/master/KeyStores")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft Corporation")]
-[assembly: AssemblyProduct("AdmPwd.Service.KeyStore")]
-[assembly: AssemblyCopyright("Copyright © Jiri Formacek 2016")]
+[assembly: AssemblyCompany("GreyCorbel Solutions")]
+[assembly: AssemblyProduct("AdmPwd.PDS.KeyStore")]
+[assembly: AssemblyCopyright("Copyright © GreyCorbel Solutions 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.0.1.0")]
+[assembly: AssemblyFileVersion("1.0.1.0")]
