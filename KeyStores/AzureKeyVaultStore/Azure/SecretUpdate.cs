@@ -14,7 +14,7 @@ namespace AdmPwd.PDS.AzureKeyStore.SecretUpdate
     public class Tags
     {
         public string KeyID { get; set; }
-        public string KeyType { get; set; }
+        //public string KeyType { get; set; }
         public string Area { get; set; }
     }
 

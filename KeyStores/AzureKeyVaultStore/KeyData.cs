@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.IO;
-using System.Net.Http;
-using System.Text;
 
 namespace AdmPwd.PDS.AzureKeyStore
 {
@@ -18,7 +12,6 @@ namespace AdmPwd.PDS.AzureKeyStore
     {
         public UInt32 Id;
         public byte[] key;
-        public KeyType type;
         public string area;
 
         public byte[] rawData()
@@ -30,16 +23,15 @@ namespace AdmPwd.PDS.AzureKeyStore
             return rv;
         }
 
-        public KeyData(UInt32 id, byte[] key, KeyType type, string area)
+        public KeyData(UInt32 id, byte[] key, string area)
         {
             Id = id;
             this.key = key;
-            this.type = type;
             this.area = area;
         }
-        public KeyData(byte[] data, KeyType type, string area)
+
+        public KeyData(byte[] data, string area)
         {
-            this.type = type;
             this.area = area;
             // get Id in leading 4 bytes
             byte[] idBytes = new byte[4];
@@ -68,10 +60,8 @@ namespace AdmPwd.PDS.AzureKeyStore
 
             sec.tags.Area = this.area;
             sec.tags.KeyID = this.Id.ToString();
-            sec.tags.KeyType = this.type.ToString();
 
             return sec;
-            
         }
     }
 }

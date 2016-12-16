@@ -15,7 +15,9 @@ namespace TestApp
 
             var sizes = store.SupportedKeySizes;
 
-            
+            store.GenerateKeyPair(sizes[0]);
+
+            var pubKeys = store.PublicKeys;
         }
     }
 }

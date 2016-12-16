@@ -52,17 +52,18 @@ namespace AdmPwd.PDS.AzureKeyStore
 
         #region Constants
         /// <summary>
-        /// Azure Api version to use
+        /// AAD Api version to use
         /// </summary>
-        protected string _apiVersion = "2015-06-01";
+        protected string _apiVersion = "2016-10-01";
         /// <summary>
         /// resource that receives REST API calls
         /// </summary>
+        /// 
         protected string resource = "https://vault.azure.net";
 
         #endregion
 
-        private Dictionary<UInt32, KeyPair> _keys = new Dictionary<UInt32, KeyPair>();
+        private Dictionary<UInt32, KeyData> _keys = new Dictionary<UInt32, KeyData>();
 
         public AzureKeyVaultStore()
         {
@@ -97,7 +98,7 @@ namespace AdmPwd.PDS.AzureKeyStore
 
         protected async Task LoadKeys()
         {
-            AuthenticationResult result = Authenticate();
+            AuthenticationResult result = await Authenticate();
 
             List<KeyData> keys = new List<KeyData>();
             using (var client = new HttpClient())
@@ -123,60 +124,41 @@ namespace AdmPwd.PDS.AzureKeyStore
                     {
                         secrets = (SecretList.SecretList)serializer.ReadObject(data);
                     }
-                    foreach (var secret in secrets.value)
+                    if (secrets.value != null)
                     {
-                        UriBuilder ub2 = new UriBuilder(secret.id);
-                        ub2.Query = "api-version=" + _apiVersion;
-                        response = await client.GetAsync(ub2.Uri);
-                        if (!response.IsSuccessStatusCode)
-                            throw new KeyStoreException(response.ReasonPhrase);
-
-                        using (var details = await response.Content.ReadAsStreamAsync())
+                        foreach (var secret in secrets.value)
                         {
-                            Secret.Secret sec = (Secret.Secret)serializer2.ReadObject(details);
-                            if (_area != null && string.Compare(_area, sec.tags.Area, true) != 0)
-                                continue;
-                            KeyType keyType = KeyType.Private;
-                            if (string.Compare(sec.tags.KeyType, "private", true) != 0)
-                                keyType = KeyType.Public;
+                            UriBuilder ub2 = new UriBuilder(secret.id);
+                            ub2.Query = "api-version=" + _apiVersion;
+                            response = await client.GetAsync(ub2.Uri);
+                            if (!response.IsSuccessStatusCode)
+                                throw new KeyStoreException(response.ReasonPhrase);
 
-                            KeyData key = new KeyData(Convert.FromBase64String(sec.value),keyType,_area);
-                            keys.Add(key);
+                            using (var details = await response.Content.ReadAsStreamAsync())
+                            {
+                                Secret.Secret sec = (Secret.Secret)serializer2.ReadObject(details);
+                                if (_area != null && string.Compare(_area, sec.tags.Area, true) != 0)
+                                    continue;
+
+                                KeyData key = new KeyData(Convert.FromBase64String(sec.value), _area);
+                                _keys.Add(key.Id, key);
+                            }
                         }
                     }
-
                     if (secrets.nextLink != null)
                         response = await client.GetAsync(secrets.nextLink);
                     else
                         isAtEnd = true;
                 } while (!isAtEnd);
             }
-            //now process loaded keys and construct key pairs
-            int i= keys.Count();
-            uint j = 1;
-            while(i>0)
-            {
-                KeyData pubKey = keys.FirstOrDefault<KeyData>(x => x.Id == j && x.type == KeyType.Public);
-                if (pubKey != null)
-                    i--;
-                KeyData privKey= keys.FirstOrDefault<KeyData>(x => x.Id == j && x.type == KeyType.Private);
-                if (privKey != null)
-                    i--;
-                if (pubKey != null && privKey != null)
-                {
-                    KeyPair pair = new KeyPair(pubKey, privKey);
-                    _keys[j] = pair;
-                }
-                j++;
-            }
         }
 
-        protected AuthenticationResult Authenticate()
+        protected async Task<AuthenticationResult> Authenticate()
         {
             var authContext = new AuthenticationContext(_aadInstance);
             var clientCredential = new ClientCredential(_clientId, _appKey);
 
-            return authContext.AcquireToken(resource, clientCredential);
+            return await authContext.AcquireTokenAsync(resource, clientCredential);
 
         }
         public Dictionary<uint, string> PublicKeys
@@ -185,7 +167,7 @@ namespace AdmPwd.PDS.AzureKeyStore
             {
                 Dictionary<UInt32, string> publicKeys = new Dictionary<uint, string>();
                 foreach (var key in _keys)
-                    publicKeys.Add(key.Key, key.Value.PublicKey.ToString());
+                    publicKeys.Add(key.Key, GetPublicKey(key.Key));
                 return publicKeys;
             }
         }
@@ -202,7 +184,7 @@ namespace AdmPwd.PDS.AzureKeyStore
         {
             using (var csp = new RSACryptoServiceProvider(new CspParameters { Flags = CspProviderFlags.UseMachineKeyStore }))
             {
-                KeyData privKey = _keys[keyID].PrivateKey;
+                KeyData privKey = _keys[keyID];
 
                 csp.ImportCspBlob(privKey.key);
                 byte[] decryptedData = null;
@@ -221,24 +203,20 @@ namespace AdmPwd.PDS.AzureKeyStore
                 KeyID = _keys.Keys.Max<UInt32>() + 1;
             using (var csp = new RSACryptoServiceProvider(KeySize, CSPParam))
             {
+                var privKey = new KeyData(KeyID, csp.ExportCspBlob(true), _area);
 
-                var pubKey = new KeyData(KeyID, csp.ExportCspBlob(false), KeyType.Public, _area);
-                var privKey = new KeyData(KeyID, csp.ExportCspBlob(true), KeyType.Private, _area);
-
-                SecretUpdate.SecretUpdate pubSecret = pubKey.ToSecretUpdate();
                 SecretUpdate.SecretUpdate privSecret = privKey.ToSecretUpdate();
 
-                SaveSecret(pubSecret, (Guid.NewGuid().ToString())).Wait();
                 SaveSecret(privSecret, (Guid.NewGuid().ToString())).Wait();
 
-                _keys.Add(KeyID, new KeyPair(pubKey, privKey));
+                _keys.Add(KeyID, privKey);
                 return KeyID;
             }
-
         }
+
         protected async Task SaveSecret(SecretUpdate.SecretUpdate secret, string secretName)
         {
-            AuthenticationResult result = Authenticate();
+            AuthenticationResult result = await Authenticate();
 
             UriBuilder ub = new UriBuilder(_vaultUri);
             ub.Path = "/secrets/" + secretName;
@@ -275,7 +253,13 @@ namespace AdmPwd.PDS.AzureKeyStore
                 throw new ArgumentException(string.Format("Key with this ID does not exist: {0}", KeyID));
             if (_keys[KeyID] == null)
                 return null;
-            return _keys[KeyID].PublicKey.ToString();
+            using (var csp = new RSACryptoServiceProvider(new CspParameters { Flags = CspProviderFlags.UseMachineKeyStore }))
+            {
+                csp.ImportCspBlob(_keys[KeyID].key);
+                byte[] pubKey = csp.ExportCspBlob(false);
+                KeyData pubKeyData = new KeyData(KeyID, pubKey,_keys[KeyID].area);
+                return pubKeyData.ToString();
+            }
         }
     }
 }

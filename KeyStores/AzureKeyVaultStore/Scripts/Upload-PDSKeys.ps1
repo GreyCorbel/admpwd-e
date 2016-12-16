@@ -1,7 +1,7 @@
 ﻿Param
 (
 	[String]$folder="D:\Keys",
-	[String]$Vault="LAPS",
+	[String]$Vault="AdmPwd.E",
 	[String]$Area="DEV",
     [UInt32]$StartID=1,
     [UInt32]$StopID=1
@@ -10,36 +10,24 @@
 $KeyID=$StartID
 while($true)
 {
-	$pubKeyFile="$folder\$KeyID`_PublicKey`.dat"
-	$privKeyFile="$folder\$KeyID`_PrivateKey`.dat"
+	$KeyFile="$folder\$KeyID`_Key`.dat"
 
-	if(((-not [System.IO.FIle]::Exists($pubKeyFile)) -and (-not [System.IO.FIle]::Exists($privKeyFile))) -or ($KeyID -gt $StopID))
+	if(((-not [System.IO.FIle]::Exists($KeyFile))) -or ($KeyID -gt $StopID))
 	{
 		break;
 	}
-	$pubKey=$null
-	if([System.IO.FIle]::Exists($pubKeyFile))
+	$Key=$null
+	if([System.IO.FIle]::Exists($KeyFile))
 	{
-		$pubKey=[System.IO.File]::ReadAllText($pubKeyFile)
-	}
-	$privKey=$null
-	if([System.IO.FIle]::Exists($privKeyFile))
-	{
-		$privKey=[System.IO.File]::ReadAllText($privKeyFile)
+		$Key=[System.IO.File]::ReadAllText($KeyFile)
 	}
 
-	if($pubKey -ne $null -and $privKey -ne $null)
+	if($Key -ne $null)
 	{
-		$tags=@{KeyID="$KeyID";Area=$Area;KeyType="Public"}
-		$Key=ConvertTo-SecureString -String $pubKey -AsPlainText -Force
+		$tags=@{KeyID="$KeyID";Area=$Area}
+		$Key=ConvertTo-SecureString -String $Key -AsPlainText -Force
 
 		Set-AzureKeyVaultSecret -VaultName $Vault -Name ([Guid]::NewGuid().ToString()) -Tags $tags -SecretValue $Key
-
-		$tags=@{KeyID="$KeyID";Area=$Area;KeyType="Private"}
-		$Key=ConvertTo-SecureString -String $privKey -AsPlainText -Force
-
-		Set-AzureKeyVaultSecret -VaultName $Vault -Name ([Guid]::NewGuid().ToString()) -Tags $tags -SecretValue $Key
-
 	}
     $KeyID++
 }
