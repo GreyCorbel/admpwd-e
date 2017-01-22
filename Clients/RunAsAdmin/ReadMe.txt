@@ -2,34 +2,16 @@
     APPLICATION : RunAsAdmin Project Overview
 ========================================================================
 
-AppWizard has created this RunAsAdmin Application for you.  
+This project demonstrates how to make use of password retrieval capability
+of AdmPwd.E, as published via integration library.
 
-This file contains a summary of what you will find in each of the files that
-make up your RunAsAdmin application.
+RunAsAdmin.exe runs any executable in security context of local admin account.
+User who runs the tool does not need to know password of local admin at all, 
+as long as he/she has been delegated permission to Read Admin Password from
+Active Directory.
+Tool fetches the password from AD for user, and uses it to start new process.
+User does not need to know/enter the password at all - everything happens 
+behind the scenes.
 
-RunAsAdmin.vcxproj
-    This is the main project file for VC++ projects generated using an Application Wizard. 
-    It contains information about the version of Visual C++ that generated the file, and 
-    information about the platforms, configurations, and project features selected with the
-    Application Wizard.
-
-RunAsAdmin.vcxproj.filters
-    This is the filters file for VC++ projects generated using an Application Wizard. 
-    It contains information about the association between the files in your project 
-    and the filters. This association is used in the IDE to show grouping of files with
-    similar extensions under a specific node (for e.g. ".cpp" files are associated with the
-    "Source Files" filter).
-
-RunAsAdmin.cpp
-    This is the main application source file.
-
-AssemblyInfo.cpp
-	Contains custom attributes for modifying assembly metadata.
-
-/////////////////////////////////////////////////////////////////////////////
-Other notes:
-
-AppWizard uses "TODO:" to indicate parts of the source code you
-should add to or customize.
-
-/////////////////////////////////////////////////////////////////////////////
+Note: For demo purpose, code is written in C++/CLR and as such, compiled code 
+requires Visual C++ 2015 Redistributable to be installed on the machine.
