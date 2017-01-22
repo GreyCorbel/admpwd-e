@@ -57,9 +57,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AdmPwd.ServiceUtils, Version=7.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\CommonReference\AdmPwd.ServiceUtils.dll</HintPath>
+    <Reference Include="AdmPwd.PDSWrapper">
+      <HintPath>..\CommonReference\AdmPwd.PDSWrapper.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

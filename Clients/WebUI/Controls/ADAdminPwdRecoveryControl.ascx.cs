@@ -95,24 +95,24 @@ namespace AdmPwd.Portal.Controls
                     this.PanelResult.Visible = true;
                     return;
                 }
-                catch (System.ServiceModel.FaultException<ServiceFault> faex)
+                catch (PDSException ex)
                 {
-                    switch (faex.Detail.IssueCode)
+                    switch (ex.IssueCode)
                     {
                         case IssueType.ComputerNotFound:
-                            this.labelResult.Text = Messages.Errors_ADNoComputerFoundException + " " + faex.Message;
+                            this.labelResult.Text = Messages.Errors_ADNoComputerFoundException + " " + ex.Message;
                             break;
                         case IssueType.ComputerAmbiguous:
-                            this.labelResult.Text = Messages.Errors_MultipleComputerObjectsFound + ": " + faex.Message;
+                            this.labelResult.Text = Messages.Errors_MultipleComputerObjectsFound + ": " + ex.Message;
                             break;
                         case IssueType.AccessDenied:
-                            this.labelResult.Text = Messages.Errors_NoReadPasswordForUserOnComputerObject + ": " + faex.Message;
+                            this.labelResult.Text = Messages.Errors_NoReadPasswordForUserOnComputerObject + ": " + ex.Message;
                             break;
                         case IssueType.CannotRetrievePassword:
-                            this.labelResult.Text = Messages.Errors_CannotRetrievePassword + ": " + faex.Message;
+                            this.labelResult.Text = Messages.Errors_CannotRetrievePassword + ": " + ex.Message;
                             break;
                         default:
-                            this.labelResult.Text = Messages.Errors_CannotRetrievePassword + ": " + faex.Message;
+                            this.labelResult.Text = Messages.Errors_CannotRetrievePassword + ": " + ex.Message;
                             break;
                     }
                     this.PanelResult.CssClass = "errorMessage";
@@ -187,25 +187,25 @@ namespace AdmPwd.Portal.Controls
                     {
                         rslt = PDSUtils.PdsWrapper.ResetPassword(this.cboForestNames.Text, this.textComputerName.Text, newExpirationDate.ToUniversalTime());
                     }
-                    catch (System.ServiceModel.FaultException<ServiceFault> faex)
+                    catch (AdmPwd.Types.PDSException ex)
                     {
-                        switch(faex.Detail.IssueCode)
+                        switch(ex.IssueCode)
                         {
                             case IssueType.ComputerNotFound:
-                                this.labelResult.Text = Messages.Errors_ADNoComputerFoundException + " " + faex.Message;
+                                this.labelResult.Text = Messages.Errors_ADNoComputerFoundException + " " + ex.Message;
                                 this.PanelResult.CssClass = "errorMessage";
                                 break;
                             case IssueType.ComputerAmbiguous:
-                                this.labelResult.Text = Messages.Errors_MultipleComputerObjectsFound + ": " + faex.Message;
+                                this.labelResult.Text = Messages.Errors_MultipleComputerObjectsFound + ": " + ex.Message;
                                 break;
                             case IssueType.AccessDenied:
-                                this.labelResult.Text = Messages.Errors_NoResetPasswordForUserOnComputerObject + ": " + faex.Message;
+                                this.labelResult.Text = Messages.Errors_NoResetPasswordForUserOnComputerObject + ": " + ex.Message;
                                 break;
                             case IssueType.CannotResetPassword:
-                                this.labelResult.Text = Messages.Errors_CannotResetPassword + ": " + faex.Message;
+                                this.labelResult.Text = Messages.Errors_CannotResetPassword + ": " + ex.Message;
                                 break;
                             default:
-                                this.labelResult.Text = Messages.Errors_CannotResetPassword + ": " + faex.Message;
+                                this.labelResult.Text = Messages.Errors_CannotResetPassword + ": " + ex.Message;
                                 break;
                         }
                         this.PanelResult.CssClass = "errorMessage";

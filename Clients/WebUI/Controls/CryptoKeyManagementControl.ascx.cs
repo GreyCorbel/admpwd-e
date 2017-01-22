@@ -97,9 +97,9 @@ namespace AdmPwd.Portal.Controls
                     PanelResult.Visible = true;
                     return;
                 }
-                catch (System.ServiceModel.FaultException<ServiceFault> faex)
+                catch (PDSException ex)
                 {
-                    labelResult.Text = Messages.Errors_CannotResetPassword + " - " + faex.Message;
+                    labelResult.Text = Messages.Errors_CannotResetPassword + " - " + ex.Message;
                     PanelResult.Visible = true;
                     return;
                 }
