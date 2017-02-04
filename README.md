@@ -1,5 +1,5 @@
-# LAPS.E
-This projects contains LAPS.E client and support tools
+# AdmPwd.E
+This projects contains AdmPwd.E (formerly known as LAPS.E) client and support tools
 
 Content:
 - Clients:
