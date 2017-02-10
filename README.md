@@ -9,4 +9,4 @@ Content:
 - KeyStores:
   - Contains source for AdmPwd.PDS.KeyStore.IKeyStore interface and implementation of PDS keystore based on Azure KeyVault
   - Provided as reference implementation for other types of key stores, such as key stores based on HSM
-- AdmPwd.E AD schema definition file (LAPS.E.ldf), so anyone can see what changes are done in AD schema, and extend the schema manually, if needed.
+- AdmPwd.E AD schema definition file (AdmPwd.E.ldf), so anyone can see what changes are done in AD schema, and extend the schema manually, if needed.
