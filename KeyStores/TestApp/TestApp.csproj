@@ -50,6 +50,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AdmPwd.PDS.KeyStore\AdmPwd.PDS.KeyStore.csproj">
+      <Project>{b1e548da-77c0-45e4-a693-b66304f0e2b9}</Project>
+      <Name>AdmPwd.PDS.KeyStore</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AzureKeyVaultStore\AzureKeyVaultStore.csproj">
       <Project>{a3b5e7e1-5fb5-4c62-9117-ac9d0942eebd}</Project>
       <Name>AzureKeyVaultStore</Name>

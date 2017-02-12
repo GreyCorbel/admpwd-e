@@ -8,39 +8,39 @@ namespace AdmPwd.PDS.AzureKeyStore
         Public,
         Private
     }
-    public class KeyData
+    public class VaultKeyData
     {
         public UInt32 Id;
-        public byte[] key;
-        public string area;
+        public byte[] Key;
+        public string Area;
 
         public byte[] rawData()
         {
             byte[] idBytes = BitConverter.GetBytes(Id);
-            byte[] rv = new byte[idBytes.Length + key.Length];
+            byte[] rv = new byte[idBytes.Length + Key.Length];
             System.Buffer.BlockCopy(idBytes, 0, rv, 0, idBytes.Length);
-            System.Buffer.BlockCopy(key, 0, rv, idBytes.Length, key.Length);
+            System.Buffer.BlockCopy(Key, 0, rv, idBytes.Length, Key.Length);
             return rv;
         }
 
-        public KeyData(UInt32 id, byte[] key, string area)
+        public VaultKeyData(UInt32 id, byte[] key, string area)
         {
             Id = id;
-            this.key = key;
-            this.area = area;
+            Key = key;
+            Area = area;
         }
 
-        public KeyData(byte[] data, string area)
+        public VaultKeyData(byte[] data, string area)
         {
-            this.area = area;
+            Area = area;
             // get Id in leading 4 bytes
             byte[] idBytes = new byte[4];
             System.Buffer.BlockCopy(data, 0, idBytes, 0, 4);
             this.Id = BitConverter.ToUInt32(idBytes, 0);
 
             // get key data from the rest of byte array
-            this.key = new byte[data.Length - idBytes.Length];
-            System.Buffer.BlockCopy(data, idBytes.Length, this.key, 0, data.Length - idBytes.Length);
+            this.Key = new byte[data.Length - idBytes.Length];
+            System.Buffer.BlockCopy(data, idBytes.Length, this.Key, 0, data.Length - idBytes.Length);
         }
 
         public override string ToString()
@@ -58,7 +58,7 @@ namespace AdmPwd.PDS.AzureKeyStore
 
             sec.contentType = null;
 
-            sec.tags.Area = this.area;
+            sec.tags.Area = this.Area;
             sec.tags.KeyID = this.Id.ToString();
 
             return sec;

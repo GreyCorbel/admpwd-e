@@ -52,7 +52,7 @@
   <ItemGroup>
     <Compile Include="AzureKeyVaultStore.cs" />
     <Compile Include="Azure\SecretUpdate.cs" />
-    <Compile Include="KeyData.cs" />
+    <Compile Include="VaultKeyData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Azure\Secret.cs" />
     <Compile Include="Azure\SecretList.cs" />

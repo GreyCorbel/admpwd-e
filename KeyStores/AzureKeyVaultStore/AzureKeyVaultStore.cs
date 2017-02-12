@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using AdmPwd.PDS.KeyStore;
 using System.Net.Http;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using System.Net.Http.Headers;
 using System.Runtime.Serialization.Json;
 using System.Configuration;
 using System.Security.Cryptography;
+using AdmPwd.PDS.KeyStore;
 
 namespace AdmPwd.PDS.AzureKeyStore
 {
@@ -63,7 +62,7 @@ namespace AdmPwd.PDS.AzureKeyStore
 
         #endregion
 
-        private Dictionary<UInt32, KeyData> _keys = new Dictionary<UInt32, KeyData>();
+        private Dictionary<UInt32, VaultKeyData> _keys = new Dictionary<UInt32, VaultKeyData>();
 
         public AzureKeyVaultStore()
         {
@@ -79,7 +78,7 @@ namespace AdmPwd.PDS.AzureKeyStore
             _aadInstance = ConfigurationManager.AppSettings["AzureKeyVaultStore:AADInstance"];
             _appKey = ConfigurationManager.AppSettings["AzureKeyVaultStore:AccessKey"];
             _clientId = ConfigurationManager.AppSettings["AzureKeyVaultStore:ClientId"];
-            _area= ConfigurationManager.AppSettings["AzureKeyVaultStore:Area"];
+            _area = ConfigurationManager.AppSettings["AzureKeyVaultStore:Area"];
 
             if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["AzureKeyVaultStore:SupportedKeySizes"]))
             {
@@ -100,7 +99,7 @@ namespace AdmPwd.PDS.AzureKeyStore
         {
             AuthenticationResult result = await Authenticate();
 
-            List<KeyData> keys = new List<KeyData>();
+            List<VaultKeyData> keys = new List<VaultKeyData>();
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", result.AccessToken);
@@ -110,7 +109,7 @@ namespace AdmPwd.PDS.AzureKeyStore
                 UriBuilder ub = new UriBuilder(_vaultUri);
                 ub.Path += "secrets";
                 ub.Query = "api-version=" + _apiVersion + "&maxresults=25"; //maxresults seems to be required by API
-                
+
                 HttpResponseMessage response = await client.GetAsync(ub.Uri);
                 if (!response.IsSuccessStatusCode)
                     throw new KeyStoreException(response.ReasonPhrase);
@@ -140,7 +139,7 @@ namespace AdmPwd.PDS.AzureKeyStore
                                 if (_area != null && string.Compare(_area, sec.tags.Area, true) != 0)
                                     continue;
 
-                                KeyData key = new KeyData(Convert.FromBase64String(sec.value), _area);
+                                VaultKeyData key = new VaultKeyData(Convert.FromBase64String(sec.value), _area);
                                 _keys.Add(key.Id, key);
                             }
                         }
@@ -161,15 +160,14 @@ namespace AdmPwd.PDS.AzureKeyStore
             return await authContext.AcquireTokenAsync(resource, clientCredential);
 
         }
-        public Dictionary<uint, string> PublicKeys
+
+        public List<AdmPwd.PDS.KeyStore.KeyData> GetPublicKeys()
         {
-            get
-            {
-                Dictionary<UInt32, string> publicKeys = new Dictionary<uint, string>();
-                foreach (var key in _keys)
-                    publicKeys.Add(key.Key, GetPublicKey(key.Key));
-                return publicKeys;
-            }
+            List<AdmPwd.PDS.KeyStore.KeyData> retVal = new List<KeyStore.KeyData>();
+
+            foreach (var key in _keys)
+                retVal.Add(GetPublicKey(key.Key));
+            return retVal;
         }
 
         public List<int> SupportedKeySizes
@@ -184,9 +182,9 @@ namespace AdmPwd.PDS.AzureKeyStore
         {
             using (var csp = new RSACryptoServiceProvider(new CspParameters { Flags = CspProviderFlags.UseMachineKeyStore }))
             {
-                KeyData privKey = _keys[keyID];
+                VaultKeyData privKey = _keys[keyID];
 
-                csp.ImportCspBlob(privKey.key);
+                csp.ImportCspBlob(privKey.Key);
                 byte[] decryptedData = null;
                 decryptedData = csp.Decrypt(Convert.FromBase64String(EncryptedPwd), true);
                 return System.Text.UnicodeEncoding.Unicode.GetString(decryptedData); // decrypted password
@@ -203,7 +201,7 @@ namespace AdmPwd.PDS.AzureKeyStore
                 KeyID = _keys.Keys.Max<UInt32>() + 1;
             using (var csp = new RSACryptoServiceProvider(KeySize, CSPParam))
             {
-                var privKey = new KeyData(KeyID, csp.ExportCspBlob(true), _area);
+                var privKey = new VaultKeyData(KeyID, csp.ExportCspBlob(true), _area);
 
                 SecretUpdate.SecretUpdate privSecret = privKey.ToSecretUpdate();
 
@@ -247,7 +245,7 @@ namespace AdmPwd.PDS.AzureKeyStore
             }
         }
 
-        public string GetPublicKey(uint KeyID)
+        public AdmPwd.PDS.KeyStore.KeyData GetPublicKey(uint KeyID)
         {
             if (!_keys.Keys.Contains(KeyID))
                 throw new ArgumentException(string.Format("Key with this ID does not exist: {0}", KeyID));
@@ -255,10 +253,15 @@ namespace AdmPwd.PDS.AzureKeyStore
                 return null;
             using (var csp = new RSACryptoServiceProvider(new CspParameters { Flags = CspProviderFlags.UseMachineKeyStore }))
             {
-                csp.ImportCspBlob(_keys[KeyID].key);
+                csp.ImportCspBlob(_keys[KeyID].Key);
                 byte[] pubKey = csp.ExportCspBlob(false);
-                KeyData pubKeyData = new KeyData(KeyID, pubKey,_keys[KeyID].area);
-                return pubKeyData.ToString();
+                VaultKeyData pubKeyData = new VaultKeyData(KeyID, pubKey, _keys[KeyID].Area);
+                AdmPwd.PDS.KeyStore.KeyData retVal = new KeyStore.KeyData();
+                retVal.ID = KeyID;
+                retVal.Key = pubKeyData.ToString();
+                retVal.Size = csp.KeySize;
+                retVal.Type = "CryptoAPI_RSA";
+                return retVal;
             }
         }
     }

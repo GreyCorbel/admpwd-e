@@ -11,39 +11,47 @@ namespace AdmPwd.PDS.KeyStore
         /// <summary>
         /// Returns list of RSA key sizes supported by keystore.
         /// Purpose of this is to limit sizes of RSA keys that keystore can produce
-        /// This does not limit capability of keystore to use key for Decrypt opration - this means it can fddecpryt using key whit unsupported size
+        /// This does not limit capability of keystore to use key for Decrypt operation - this means it can decpryt using key with unsupported size
         /// </summary>
         List<int> SupportedKeySizes { get; }
-
-        /// <summary>
-        /// Returns list of all public keys maintained by the keystore
-        /// </summary>
-        Dictionary<UInt32, string> PublicKeys { get; }
 
         /// <summary>
         /// Decrypts secret using key with given keyID
         /// </summary>
         /// <param name="keyID">ID of the key to use for decryption</param>
         /// <param name="EncryptedPwd">Encrypted secret to decrypt, encoded as Base64 string</param>
-        /// <returns></returns>
+        /// <returns>
+        /// Decrypted data as string
+        /// </returns>
         string Decrypt(UInt32 keyID, string EncryptedPwd);
 
         /// <summary>
-        /// Generates new RSA KeyPair
+        /// Generates new KeyPair
         /// </summary>
         /// <param name="KeySize">
-        /// Size of new RSA key, in bits. Size must be one of <see cref="SupportedKeySizes"/> 
+        /// Size of new key, in bits. Size must be one of <see cref="SupportedKeySizes"/>, otherwise keystore must refuse the operation and throw <see cref="KeyStoreException"/>
         /// </param>
-        /// <returns></returns>
+        /// <returns>
+        /// ID of newly generated key pair
+        /// </returns>
         UInt32 GenerateKeyPair(int KeySize);
 
         /// <summary>
         /// Returns public key with specified KeyID, or null if key with given KeyID is not managed by KeyStore.
-        /// Key is returned as Base64 encoded blob
         /// </summary>
         /// <param name="KeyID">ID of the key to return</param>
-        /// <returns></returns>
-        string GetPublicKey(UInt32 KeyID);
+        /// <returns>
+        /// <see cref="KeyData"/> describing public key
+        /// </returns>
+        KeyData GetPublicKey(UInt32 KeyID);
+
+        /// <summary>
+        /// Returns all public keys managed by a keystore
+        /// </summary>
+        /// <returns>
+        /// List of <see cref="KeyData"/> objects describing public keys managed by implementation of KeyStore
+        /// </returns>
+        List<KeyData> GetPublicKeys();
 
     }
 }
