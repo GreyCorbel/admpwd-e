@@ -10,6 +10,10 @@
 $KeyID=$StartID
 while($true)
 {
+	if($KeyID -gt $StopID)
+	{
+		break;
+	}
 	$KeyFile="$folder\$KeyID`_Key`.dat"
 
 	if(((-not [System.IO.FIle]::Exists($KeyFile))) -or ($KeyID -gt $StopID))
