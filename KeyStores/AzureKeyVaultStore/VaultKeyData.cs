@@ -1,13 +1,7 @@
 ﻿using System;
 
-namespace AdmPwd.PDS.AzureKeyStore
+namespace AdmPwd.PDS.KeyStore.AzureKeyVault
 {
-
-    public enum KeyType
-    {
-        Public,
-        Private
-    }
     public class VaultKeyData
     {
         public UInt32 Id;

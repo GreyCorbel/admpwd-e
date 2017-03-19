@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using AdmPwd.PDS.AzureKeyStore;
+using AdmPwd.PDS.KeyStore;
 
 namespace TestApp
 {

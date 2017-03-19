@@ -7,10 +7,11 @@
     <ProjectGuid>{A3B5E7E1-5FB5-4C62-9117-AC9D0942EEBD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AdmPwd.PDS.AzureKeyStore</RootNamespace>
+    <RootNamespace>AdmPwd.PDS.KeyStore</RootNamespace>
     <AssemblyName>AzureKeyVaultStore</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -51,11 +52,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AzureKeyVaultStore.cs" />
-    <Compile Include="Azure\SecretUpdate.cs" />
+    <Compile Include="AzureStructures\SecretUpdate.cs" />
     <Compile Include="VaultKeyData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Azure\Secret.cs" />
-    <Compile Include="Azure\SecretList.cs" />
+    <Compile Include="AzureStructures\Secret.cs" />
+    <Compile Include="AzureStructures\SecretList.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AdmPwd.PDS.KeyStore\AdmPwd.PDS.KeyStore.csproj">

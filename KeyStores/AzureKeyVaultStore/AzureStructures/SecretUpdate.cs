@@ -2,7 +2,7 @@
 using System.Runtime.Serialization;
 
 
-namespace AdmPwd.PDS.AzureKeyStore.SecretUpdate
+namespace AdmPwd.PDS.KeyStore.AzureKeyVault.SecretUpdate
 {
 
     public class Attributes

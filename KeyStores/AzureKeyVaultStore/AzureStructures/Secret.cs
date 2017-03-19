@@ -2,36 +2,31 @@
 using System.Runtime.Serialization;
 
 
-namespace AdmPwd.PDS.AzureKeyStore.SecretList
+namespace AdmPwd.PDS.KeyStore.AzureKeyVault.Secret
 {
     public class Attributes
     {
+        public bool enabled { get; set; }
         public int created { get; set; }
         public int updated { get; set; }
-        public bool? enabled { get; set; }
     }
-
     public class Tags
     {
         public string KeyID { get; set; }
-        public string Area { get; set; }
         public string KeyType { get; set; }
+        public string Area { get; set; }
     }
-
-    public class SecretInfo
-    {
-        public string id { get; set; }
-        public Attributes attributes { get; set; }
-        public Tags tags { get; set; }
-
-    }
-
     [DataContract]
-    public class SecretList
+    public class Secret
     {
         [DataMember]
-        public List<SecretInfo> value { get; set; }
+        public string value { get; set; }
         [DataMember]
-        public string nextLink { get; set; }
+        public string id { get; set; }
+        [DataMember]
+        public Attributes attributes { get; set; }
+        [DataMember]
+        public Tags tags { get; set; }
     }
+
 }

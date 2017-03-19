@@ -8,9 +8,9 @@ using System.Net.Http.Headers;
 using System.Runtime.Serialization.Json;
 using System.Configuration;
 using System.Security.Cryptography;
-using AdmPwd.PDS.KeyStore;
+using AdmPwd.PDS.KeyStore.AzureKeyVault;
 
-namespace AdmPwd.PDS.AzureKeyStore
+namespace AdmPwd.PDS.KeyStore
 {
     public class AzureKeyVaultStore : IKeyStore
     {
@@ -19,7 +19,7 @@ namespace AdmPwd.PDS.AzureKeyStore
         /// <summary>
         /// vault uri, such as https://laps.vault.azure.net/
         /// Notes:
-        ///     Rememebr to include trailing slash
+        ///     Rememeber to include trailing slash
         /// </summary>
         protected Uri _vaultUri;
 
@@ -114,14 +114,14 @@ namespace AdmPwd.PDS.AzureKeyStore
                 if (!response.IsSuccessStatusCode)
                     throw new KeyStoreException(response.ReasonPhrase);
                 bool isAtEnd = false;
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(SecretList.SecretList));
-                DataContractJsonSerializer serializer2 = new DataContractJsonSerializer(typeof(Secret.Secret));
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(AzureKeyVault.SecretList.SecretList));
+                DataContractJsonSerializer serializer2 = new DataContractJsonSerializer(typeof(AzureKeyVault.Secret.Secret));
                 do
                 {
-                    SecretList.SecretList secrets = null;
+                    AzureKeyVault.SecretList.SecretList secrets = null;
                     using (var data = await response.Content.ReadAsStreamAsync())
                     {
-                        secrets = (SecretList.SecretList)serializer.ReadObject(data);
+                        secrets = (AzureKeyVault.SecretList.SecretList)serializer.ReadObject(data);
                     }
                     if (secrets.value != null)
                     {
@@ -135,7 +135,7 @@ namespace AdmPwd.PDS.AzureKeyStore
 
                             using (var details = await response.Content.ReadAsStreamAsync())
                             {
-                                Secret.Secret sec = (Secret.Secret)serializer2.ReadObject(details);
+                                AzureKeyVault.Secret.Secret sec = (AzureKeyVault.Secret.Secret)serializer2.ReadObject(details);
                                 if (_area != null && string.Compare(_area, sec.tags.Area, true) != 0)
                                     continue;
 
@@ -203,7 +203,7 @@ namespace AdmPwd.PDS.AzureKeyStore
             {
                 var privKey = new VaultKeyData(KeyID, csp.ExportCspBlob(true), _area);
 
-                SecretUpdate.SecretUpdate privSecret = privKey.ToSecretUpdate();
+                AzureKeyVault.SecretUpdate.SecretUpdate privSecret = privKey.ToSecretUpdate();
 
                 SaveSecret(privSecret, (Guid.NewGuid().ToString())).Wait();
 
@@ -212,7 +212,7 @@ namespace AdmPwd.PDS.AzureKeyStore
             }
         }
 
-        protected async Task SaveSecret(SecretUpdate.SecretUpdate secret, string secretName)
+        protected async Task SaveSecret(AzureKeyVault.SecretUpdate.SecretUpdate secret, string secretName)
         {
             AuthenticationResult result = await Authenticate();
 
@@ -221,7 +221,7 @@ namespace AdmPwd.PDS.AzureKeyStore
             ub.Query = "api-version=" + _apiVersion;
 
 
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(SecretUpdate.SecretUpdate));
+            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(AzureKeyVault.SecretUpdate.SecretUpdate));
             using (var stream = new System.IO.MemoryStream())
             {
                 serializer.WriteObject(stream, secret);
