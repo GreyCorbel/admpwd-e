@@ -95,6 +95,18 @@ namespace AdmPwd.PDS.KeyStore
             LoadKeys().Wait();
         }
 
+        public bool IsLicensed
+        {
+            get
+            {
+                return true;
+            }
+            set
+            {
+                //does not support paid features
+            }
+        }
+
         protected async Task LoadKeys()
         {
             AuthenticationResult result = await Authenticate();

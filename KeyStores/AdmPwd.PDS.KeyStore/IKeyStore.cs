@@ -53,5 +53,12 @@ namespace AdmPwd.PDS.KeyStore
         /// </returns>
         List<KeyData> GetPublicKeys();
 
+        /// <summary>
+        /// Used for keystores that support paid functionality
+        /// PDS will check license status for keystore implementation and eventually switches
+        /// keystore implementation to full mode
+        /// </summary>
+        bool IsLicensed { get; set; }
+
     }
 }
