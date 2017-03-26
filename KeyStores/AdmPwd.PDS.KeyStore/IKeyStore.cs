@@ -54,11 +54,12 @@ namespace AdmPwd.PDS.KeyStore
         List<KeyData> GetPublicKeys();
 
         /// <summary>
-        /// Used for keystores that support paid functionality
-        /// PDS will check license status for keystore implementation and eventually switches
-        /// keystore implementation to full mode
+        /// Used to carry on initialization tasks necessary for keystore
         /// </summary>
-        bool IsLicensed { get; set; }
+        /// <param name="FunctionalityLevel">Identifies desired functionality level of keystore. Keystore may implement various functionality level - some of them for free, some paid.
+        /// PDS can read license information for keystore and pass desired functionality level to keystore, according to license provided.
+        /// </param>
+        void Initialize(int FunctionalityLevel);
 
     }
 }

@@ -95,17 +95,6 @@ namespace AdmPwd.PDS.KeyStore
             LoadKeys().Wait();
         }
 
-        public bool IsLicensed
-        {
-            get
-            {
-                return true;
-            }
-            set
-            {
-                //does not support paid features
-            }
-        }
 
         protected async Task LoadKeys()
         {
@@ -275,6 +264,11 @@ namespace AdmPwd.PDS.KeyStore
                 retVal.Type = "CryptoAPI_RSA";
                 return retVal;
             }
+        }
+
+        public void Initialize(int FunctionalityLevel)
+        {
+            //nothing done here
         }
     }
 }

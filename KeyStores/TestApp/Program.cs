@@ -10,6 +10,8 @@ namespace TestApp
         {
             AzureKeyVaultStore store = new AzureKeyVaultStore();
 
+            store.Initialize(0);
+
             var sizes = store.SupportedKeySizes;
 
             store.GenerateKeyPair(sizes[0]);
