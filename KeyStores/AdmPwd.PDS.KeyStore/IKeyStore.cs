@@ -11,7 +11,7 @@ namespace AdmPwd.PDS.KeyStore
         /// <summary>
         /// Returns list of RSA key sizes supported by keystore.
         /// Purpose of this is to limit sizes of RSA keys that keystore can produce
-        /// This does not limit capability of keystore to use key for Decrypt operation - this means it can decpryt using key with unsupported size
+        /// This does not limit capability of keystore to use key for Decrypt operation - this means it can decrypt using key with unsupported size
         /// </summary>
         List<int> SupportedKeySizes { get; }
 

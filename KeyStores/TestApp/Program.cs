@@ -9,7 +9,10 @@ namespace TestApp
         static void Main(string[] args)
         {
             AzureKeyVaultStore store = new AzureKeyVaultStore();
-
+			
+			//initialize the keystore
+			//0 means basic functionality; 1 means more functionality, etc.
+			//functionality levels are defined by the vendor of keystore implementation
             store.Initialize(0);
 
             var sizes = store.SupportedKeySizes;

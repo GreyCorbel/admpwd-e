@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("AdmPwd.PDS.KeyStore")]
-[assembly: AssemblyDescription("Package contains class library that define IKeyStore interface. Impelement this interface if you want to implement custom keystore for AdmPwd.E PDS. Sample implementation of key store based on Azure KeyVault to be found on https://github.com/jformacek/admpwd-e/tree/master/KeyStores")]
+[assembly: AssemblyDescription("Package contains class library that define IKeyStore interface. Implement this interface if you want to implement custom keystore for AdmPwd.E PDS. Sample implementation of key store based on Azure KeyVault to be found on https://github.com/jformacek/admpwd-e/tree/master/KeyStores")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("GreyCorbel Solutions")]
 [assembly: AssemblyProduct("AdmPwd.PDS.KeyStore")]
-[assembly: AssemblyCopyright("Copyright © GreyCorbel Solutions 2016")]
+[assembly: AssemblyCopyright("Copyright © 2016 - 2017 GreyCorbel Solutions")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

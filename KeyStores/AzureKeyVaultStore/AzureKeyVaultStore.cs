@@ -19,12 +19,12 @@ namespace AdmPwd.PDS.KeyStore
         /// <summary>
         /// vault uri, such as https://laps.vault.azure.net/
         /// Notes:
-        ///     Rememeber to include trailing slash
+        ///     Remember to include trailing slash to URI
         /// </summary>
         protected Uri _vaultUri;
 
         /// <summary>
-        /// application ID, as created by AAD admin, such as "9873ac72-d7ed-4443-bd44-123b9247d6ed"
+        /// application ID, as created by AAD administrator, such as "9873ac72-d7ed-4443-bd44-123b9247d6ed"
         /// </summary>
         protected string _clientId;
 
@@ -34,7 +34,7 @@ namespace AdmPwd.PDS.KeyStore
         protected string _appKey;
 
         /// <summary>
-        /// identifier of aad instance, such as https://login.windows.net/formacek.com
+        /// identifier of AAD instance, such as https://login.windows.net/formacek.com
         /// </summary>
         protected string _aadInstance;
 
@@ -109,7 +109,8 @@ namespace AdmPwd.PDS.KeyStore
 
                 UriBuilder ub = new UriBuilder(_vaultUri);
                 ub.Path += "secrets";
-                ub.Query = "api-version=" + _apiVersion + "&maxresults=25"; //maxresults seems to be required by API
+				//maxresults seems to be required by current version of API
+                ub.Query = "api-version=" + _apiVersion + "&maxresults=25"; 
 
                 HttpResponseMessage response = await client.GetAsync(ub.Uri);
                 if (!response.IsSuccessStatusCode)
@@ -268,7 +269,7 @@ namespace AdmPwd.PDS.KeyStore
 
         public void Initialize(int FunctionalityLevel)
         {
-            //nothing done here
+            //nothing done here - keystore does not support functionality levels
         }
     }
 }
