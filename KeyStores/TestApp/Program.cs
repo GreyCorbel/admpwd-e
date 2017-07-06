@@ -20,6 +20,16 @@ namespace TestApp
             store.GenerateKeyPair(sizes[0]);
 
             var pubKeys = store.GetPublicKeys();
+
+            string secret = "This is secure";
+
+            var encryptedSecret = store.Encrypt(0, secret);
+
+            string[] parts = encryptedSecret.Split(new string[] { ": " }, StringSplitOptions.None);
+
+            uint keyId = uint.Parse(parts[0]);
+
+            string decryptedSecret = store.Decrypt(keyId, parts[1]);
         }
     }
 }

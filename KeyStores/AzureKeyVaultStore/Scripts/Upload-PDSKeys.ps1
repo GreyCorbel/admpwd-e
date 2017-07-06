@@ -7,6 +7,7 @@
     [UInt32]$StopID=1
 )
 
+#Note: AzureKeyVaultStore implementation now only supports RSA_CryptoAPI keys. Support for RSA_Cng keys is coming soon
 $KeyID=$StartID
 while($true)
 {

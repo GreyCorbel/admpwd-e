@@ -26,6 +26,17 @@ namespace AdmPwd.PDS.KeyStore
         string Decrypt(UInt32 keyID, string EncryptedPwd);
 
         /// <summary>
+        /// Encrypts secret using key with given keyID
+        /// If keyID == 0, then uses key with highest ID for encryption
+        /// </summary>
+        /// <param name="keyID">ID of the key to use for decryption</param>
+        /// <param name="PlainTextPwd">Plaintext string to be encrypted</param>
+        /// <returns>
+        /// Encrypted data in the following format: $"{keyID}: {Base64-encoded encrypted blob}"
+        /// </returns>
+        string Encrypt(UInt32 keyID, string PlainTextPwd);
+
+        /// <summary>
         /// Generates new KeyPair
         /// </summary>
         /// <param name="KeySize">

@@ -193,6 +193,21 @@ namespace AdmPwd.PDS.KeyStore
             }
         }
 
+        public string Encrypt(uint keyID, string plainTextPwd)
+        {
+            using (var csp = new RSACryptoServiceProvider(new CspParameters { Flags = CspProviderFlags.UseMachineKeyStore }))
+            {
+                if (keyID == 0)
+                    keyID = _keys.Keys.Max();
+
+                VaultKeyData key = _keys[keyID];
+
+                csp.ImportCspBlob(key.Key);
+                byte[] encryptedData = null;
+                encryptedData = csp.Encrypt(System.Text.Encoding.Unicode.GetBytes(plainTextPwd), true);
+                return $"{keyID}: {Convert.ToBase64String(encryptedData)}";
+            }
+        }
         public uint GenerateKeyPair(int KeySize)
         {
             CspParameters CSPParam = new CspParameters();
