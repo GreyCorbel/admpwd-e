@@ -14,11 +14,16 @@ int main(array<System::String ^> ^args)
 {
 	String^ adminAccountName;
 	String^ pathToExecutable;
+	String^ domainName = nullptr;
+
+	DWORD dwLogonFlags = LOGON_WITH_PROFILE;
+	bool useLocalAccount = false;
 	for each (String^ arg in args)
 	{
 		if (arg->StartsWith(L"/user:", StringComparison::CurrentCultureIgnoreCase))
 		{
 			adminAccountName = arg->Substring(6);
+			useLocalAccount = false;
 			continue;
 		}
 		if (arg->StartsWith(L"/path:", StringComparison::CurrentCultureIgnoreCase))
@@ -26,29 +31,66 @@ int main(array<System::String ^> ^args)
 			pathToExecutable = arg->Substring(6);
 			continue;
 		}
+		if (arg->StartsWith(L"/noLocalProfile", StringComparison::CurrentCultureIgnoreCase))
+		{
+			dwLogonFlags = LOGON_NETCREDENTIALS_ONLY;
+			continue;
+		}
+		if (arg->StartsWith(L"/?", StringComparison::CurrentCultureIgnoreCase))
+		{
+			Usage();
+			return 0;
+		}
 	}
 	try
 	{
 		//show usage when path not specified
 		if (pathToExecutable == nullptr)
 		{
+			Console::WriteLine("ERROR: Path argument must be specified\n");
 			Usage();
 			return 0;
 		}
 
 		//if account not specified, use built-in admnin
 		if (adminAccountName == nullptr)
+		{
 			adminAccountName = GetBuiltInAdminName();
+			useLocalAccount = true;
+			domainName = ".";
+		}
+		else
+			if (adminAccountName->Contains("\\"))
+			{
+				array<String^>^ pairs = adminAccountName->Split('\\');
+				domainName = pairs[0];
+				adminAccountName = pairs[1];
+			}
+			else
+				if (!adminAccountName->Contains("@"))
+				{
+					//non-built-in local account
+					useLocalAccount = true;
+					domainName = ".";
+				}
 
 		//get local computer name
 		String^ computerName = System::Environment::GetEnvironmentVariable("COMPUTERNAME");
+		PasswordInfo^ pi;
+		if (useLocalAccount)
+			//retrieve password for local computer
+			pi = PdsWrapper::GetLocalAdminPassword(nullptr, computerName, false, false);
+		else
+			pi = PdsWrapper::GetManagedAccountPassword(nullptr, adminAccountName, false);
 
-		//retrieve password for local computer
-		PasswordInfo^ pi = PdsWrapper::GetPassword(String::Empty, computerName, false, false);
 		//run desired process
 		pin_ptr<const wchar_t> _adminAccount = PtrToStringChars(adminAccountName);
 		pin_ptr<const wchar_t> _pwd = PtrToStringChars(pi->Password);
 		pin_ptr<const wchar_t> _path = PtrToStringChars(pathToExecutable);
+		pin_ptr<const wchar_t> _domain = nullptr;
+		if (domainName != nullptr)
+			_domain = PtrToStringChars(domainName);
+
 		STARTUPINFO startInfo;
 		PROCESS_INFORMATION processInfo;
 
@@ -57,8 +99,11 @@ int main(array<System::String ^> ^args)
 
 		ZeroMemory(&processInfo, sizeof(processInfo));
 
-		if (!CreateProcessWithLogonW(_adminAccount, L".", _pwd, LOGON_WITH_PROFILE, nullptr, (LPWSTR)_path, CREATE_NEW_PROCESS_GROUP | ABOVE_NORMAL_PRIORITY_CLASS, nullptr, nullptr, &startInfo, &processInfo))
-			throw gcnew System::ComponentModel::Win32Exception(GetLastError(), L"Failed to create process as admin");
+		if (!CreateProcessWithLogonW(_adminAccount, _domain, _pwd, dwLogonFlags, nullptr, (LPWSTR)_path, CREATE_NEW_PROCESS_GROUP | ABOVE_NORMAL_PRIORITY_CLASS, nullptr, nullptr, &startInfo, &processInfo))
+		{
+			DWORD err = ::GetLastError();
+			throw gcnew System::ComponentModel::Win32Exception(err, L"Failed to create process as admin");
+		}
 	}
 	catch (PDSException^ ex)
 	{
@@ -68,7 +113,7 @@ int main(array<System::String ^> ^args)
 
 	catch (System::ComponentModel::Win32Exception^ ex)
 	{
-		Console::WriteLine("ERROR: " + ex->ErrorCode.ToString() + ": " + ex->Message);
+		Console::WriteLine("ERROR: " + ex->ErrorCode.ToString("X2") + ": " + ex->Message);
 		return 1;
 	}
 	catch (Exception^ ex)
@@ -133,7 +178,22 @@ String^ GetBuiltInAdminName()
 
 void Usage()
 {
-	Console::WriteLine("ERROR: Path argument must be specified\n");
 	Console::WriteLine("Usage:");
-	Console::WriteLine("RunAsAdmin.exe /path:<path to executable to run> [/user:<name of local admin account>]");
+	Console::WriteLine("RunAsAdmin.exe /path:<path to executable to run> [/user:<name of admin account>] [/noLocalProfile]");
+	Console::WriteLine("");
+	Console::WriteLine("EXAMPLES:");
+	Console::WriteLine("Runs command prompt as built-in local admin:");
+	Console::WriteLine("  RunAsAdmin /path:%SystemRoot%\\system32\\cmd.exe");
+	Console::WriteLine("");
+	Console::WriteLine("Runs command prompt as domain account:");
+	Console::WriteLine("  RunAsAdmin /path:%SystemRoot%\\system32\\cmd.exe /user:myaccount@mydomain.com");
+	Console::WriteLine("");
+	Console::WriteLine("Runs command prompt as custom local admin:");
+	Console::WriteLine("  RunAsAdmin /path:%SystemRoot%\\system32\\cmd.exe /user:myCustomLocalAdmin");
+	Console::WriteLine("");
+	Console::WriteLine("Runs command prompt as domain user without creating local profile and without caching the password on local machine:");
+	Console::WriteLine("  RunAsAdmin /path:%SystemRoot%\\system32\\cmd.exe /user:mydomain\myaccount /noLocalProfile");
+	Console::WriteLine("");
+
+
 }

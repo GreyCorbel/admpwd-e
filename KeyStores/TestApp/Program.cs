@@ -23,11 +23,12 @@ namespace TestApp
 
             string secret = "This is secure";
 
-            var encryptedSecret = store.Encrypt(0, secret);
+            uint keyId = 0;
+            var encryptedSecret = store.Encrypt(ref keyId, secret);
 
             string[] parts = encryptedSecret.Split(new string[] { ": " }, StringSplitOptions.None);
 
-            uint keyId = uint.Parse(parts[0]);
+            keyId = uint.Parse(parts[0]);
 
             string decryptedSecret = store.Decrypt(keyId, parts[1]);
         }

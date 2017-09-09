@@ -193,7 +193,7 @@ namespace AdmPwd.PDS.KeyStore
             }
         }
 
-        public string Encrypt(uint keyID, string plainTextPwd)
+        public string Encrypt(ref uint keyID, string plainTextPwd)
         {
             using (var csp = new RSACryptoServiceProvider(new CspParameters { Flags = CspProviderFlags.UseMachineKeyStore }))
             {
@@ -205,7 +205,7 @@ namespace AdmPwd.PDS.KeyStore
                 csp.ImportCspBlob(key.Key);
                 byte[] encryptedData = null;
                 encryptedData = csp.Encrypt(System.Text.Encoding.Unicode.GetBytes(plainTextPwd), true);
-                return $"{keyID}: {Convert.ToBase64String(encryptedData)}";
+                return $"{Convert.ToBase64String(encryptedData)}";
             }
         }
         public uint GenerateKeyPair(int KeySize)
