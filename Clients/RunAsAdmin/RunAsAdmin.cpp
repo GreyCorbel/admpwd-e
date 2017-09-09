@@ -102,7 +102,7 @@ int main(array<System::String ^> ^args)
 		if (!CreateProcessWithLogonW(_adminAccount, _domain, _pwd, dwLogonFlags, nullptr, (LPWSTR)_path, CREATE_NEW_PROCESS_GROUP | ABOVE_NORMAL_PRIORITY_CLASS, nullptr, nullptr, &startInfo, &processInfo))
 		{
 			DWORD err = ::GetLastError();
-			throw gcnew System::ComponentModel::Win32Exception(err, L"Failed to create process as admin");
+			throw gcnew System::ComponentModel::Win32Exception(err);
 		}
 	}
 	catch (PDSException^ ex)
@@ -113,7 +113,7 @@ int main(array<System::String ^> ^args)
 
 	catch (System::ComponentModel::Win32Exception^ ex)
 	{
-		Console::WriteLine("ERROR: " + ex->ErrorCode.ToString("X2") + ": " + ex->Message);
+		Console::WriteLine("ERROR: " + ex->NativeErrorCode.ToString() + ": " + ex->Message);
 		return 1;
 	}
 	catch (Exception^ ex)
