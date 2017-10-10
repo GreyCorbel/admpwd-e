@@ -192,7 +192,7 @@ void Usage()
 	Console::WriteLine("  RunAsAdmin /path:%SystemRoot%\\system32\\cmd.exe /user:myCustomLocalAdmin");
 	Console::WriteLine("");
 	Console::WriteLine("Runs command prompt as domain user without creating local profile and without caching the password on local machine:");
-	Console::WriteLine("  RunAsAdmin /path:%SystemRoot%\\system32\\cmd.exe /user:mydomain\myaccount /noLocalProfile");
+	Console::WriteLine("  RunAsAdmin /path:%SystemRoot%\\system32\\cmd.exe /user:mydomain\\myaccount /noLocalProfile");
 	Console::WriteLine("");
 
 
