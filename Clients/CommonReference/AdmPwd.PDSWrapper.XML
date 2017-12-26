@@ -12,13 +12,16 @@
         <member name="M:AdmPwd.PDSUtils.PdsWrapper.GenerateKeyPair(System.Int32)">
             <summary>
             Calls PDS to generate new RSA key pair.
+            PDS keeps private key of key pair in own storage and uses it for password decryption. 
+            Public key is put to GPO by an administrator and managed machines use it to encrypt the password of managed local admin account when reporting it to AD.
+            PDS also uses public key to encrypt password of managed domain account - ID of key to use is specified in PDS configuration file.
             </summary>
             <param name="KeySize">Specifies desired RSA key size
             Key size must be one of those allowed by PDS - see <see cref="M:AdmPwd.PDSUtils.PdsWrapper.GetSupportedKeySizes"/> method
             </param>
             <returns>Return public key of newly generated key pair, along with key ID assigned to newly generated key pair</returns>
             <remarks>
-            <para>Caller must have Key Admin role. For callers without role, AccessDenied exception is returned</para>
+            <para>Caller must have Key Admin role. For callers without role, AccessDenied exception is thrown</para>
             <para>Call is audited on PDS</para>
             </remarks>
         </member>
@@ -27,7 +30,7 @@
             Asks PDS to return public key with specified key ID
             </summary>
             <param name="KeyId">Identifies key pair for which public key is returned</param>
-            <returns>Return public key of key pair with given KeyID, along with key ID</returns>
+            <returns>Returns public key of key pair with given KeyID, along with key ID</returns>
             <remarks>
             <para>No specific permissions required</para>
             <para>Call is not audited</para>
@@ -78,7 +81,7 @@
         </member>
         <member name="M:AdmPwd.PDSUtils.PdsWrapper.GetManagedAccountPassword(System.String,System.String,System.Boolean)">
             <summary>
-            Retrieves password of managed account in given AD forest
+            Retrieves password of managed account in given AD forest.
             </summary>
             <param name="ForestName">
             Name of AD forest.
@@ -98,7 +101,7 @@
         </member>
         <member name="M:AdmPwd.PDSUtils.PdsWrapper.IsKeyAdmin">
             <summary>
-            Return information whether or not caller is in Key Admin role on PDS
+            Returns information whether or not the caller is in Key Admin role on PDS
             </summary>
             <returns>True if caller is in Key Admin role on PDS. Otherwise returns false.</returns>
             <remarks>
@@ -109,7 +112,7 @@
         </member>
         <member name="M:AdmPwd.PDSUtils.PdsWrapper.GetSupportedKeySizes">
             <summary>
-            Used to retrieve key sizes supported by PDS
+            Used to retrieve key sizes supported by PDS.
             </summary>
             <returns>List of supported key sizes, in bits</returns>
             <remarks>
@@ -137,7 +140,7 @@
             For local forest, pass null as parameter value</param>
             <param name="ComputerName">Name of computer where password of local admin account shall be reset</param>
             <param name="userUpn">UserPrincipalName of user in question.</param>
-            <returns>List of solution specific perrmissions PDS finds for given user for given computer object </returns>
+            <returns>List of solution specific permissions PDS finds for given user for given computer object </returns>
             <remarks>
             <para>This method uses Kerberos S2U4Self logon to obtain user's Kerberos ticket with group memebership</para>
             <para>No specific permissions required</para>
@@ -167,12 +170,18 @@
              <param name="Name">Name of account where password shall be reset.
              Account name can be passed as sAMAccountName (without domain), userPrincipalName, or distinguishedName.
              </param>
-             <param name="WhenEffective">When password reset shall occur. Password will be reset during next GPO update cycle on given computer after this time </param>
-             <returns>Information about result of operation along with computer name and computer DN</returns>
+             <param name="WhenEffective">When password reset shall occur. Password will be reset during next PDS management cycle - see passwordManagementInterval in PDS config file.</param>
+             <returns>Information about result of operation along with account name and DN</returns>
              <remarks>
              <para>Caller must have Reset Local Admin Passsword permission on given managed account object</para>
              <para>Call is audited on PDS</para>
              </remarks>
+        </member>
+        <member name="M:AdmPwd.PDSUtils.PdsWrapper.GetSupportedForests">
+            <summary>
+            Return list of supported forests as configured in GPO, or null, if there is nothing configured in PDS configuration
+            </summary>
+            <returns>List of names of AD forests as known by connected PDS instance</returns>
         </member>
         <member name="T:AdmPwd.Types.PasswordResetState">
             <summary>
@@ -235,7 +244,7 @@
         </member>
         <member name="T:AdmPwd.Types.PermissionEntry">
             <summary>
-            Permission entry
+            Permission entry for user on given AD object
             </summary>
         </member>
         <member name="P:AdmPwd.Types.PermissionEntry.AccessType">
@@ -250,7 +259,7 @@
         </member>
         <member name="P:AdmPwd.Types.PermissionEntry.Identity">
             <summary>
-            which security principal gives the permission. User account or group user is member of
+            Which security principal gives the permission. Can be either user account directly or group a user is member of
             </summary>
         </member>
         <member name="M:AdmPwd.Types.PermissionEntry.#ctor(System.String,System.String,System.String)">
@@ -275,7 +284,7 @@
             <summary>
             Constuctor
             </summary>
-            <param name="size">Size of the key in bits (such as 20148)</param>
+            <param name="size">Size of the key in bits (such as 2048)</param>
         </member>
         <member name="T:AdmPwd.Types.Role">
             <summary>
@@ -309,7 +318,7 @@
         </member>
         <member name="F:AdmPwd.Types.PasswordResetStatus.DistinguishedName">
             <summary>
-            DistinguishedName of computer
+            DistinguishedName of computer account or managed domain user account
             </summary>
         </member>
         <member name="F:AdmPwd.Types.PasswordResetStatus.Status">
@@ -321,8 +330,8 @@
             <summary>
             Default constructor
             </summary>
-            <param name="accountName">Name of the computer from request</param>
-            <param name="dn">DistinguishedName of computer</param>
+            <param name="accountName">Name of the computer or user account from request</param>
+            <param name="dn">DistinguishedName of computer or user account</param>
             <param name="state">Result of operation</param>
         </member>
         <member name="T:AdmPwd.Types.PasswordInfo">
@@ -345,7 +354,7 @@
         </member>
         <member name="F:AdmPwd.Types.PasswordInfo.Password">
             <summary>
-            Password of managed account - local admin account on computer or managed domain account
+            Password of managed account - local admin account on managed computer or managed domain account
             </summary>
         </member>
         <member name="F:AdmPwd.Types.PasswordInfo.ExpirationTimestamp">
@@ -356,7 +365,7 @@
         <member name="F:AdmPwd.Types.PasswordInfo.KeyId">
             <summary>
             ID of RSA key that was used to encrypt the password
-            <para/>0 if password is not encrypted
+            <para/>0 means that password is not encrypted in AD
             </summary>
         </member>
         <member name="F:AdmPwd.Types.PasswordInfo.PasswordHistory">
@@ -388,7 +397,7 @@
         <member name="P:AdmPwd.Types.PasswordHistory.KeyId">
             <summary>
             ID of RSA key that was used to encrypt the password
-            <para/>0 if password is not encrypted
+            <para/>0 means that if password is not encrypted in AD
             </summary>
         </member>
         <member name="M:AdmPwd.Types.PasswordHistory.ToString">
