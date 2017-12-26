@@ -45,7 +45,6 @@ namespace AdmPwd.Portal.Controls
         private void InitializeKeyList()
         {
             List<PublicKey> publicKeys = null;
-            var current = System.Security.Principal.WindowsIdentity.GetCurrent();
             using (WindowsImpersonationContext wic = ((WindowsIdentity)Page.User.Identity).Impersonate())
             {
                 try
@@ -61,7 +60,6 @@ namespace AdmPwd.Portal.Controls
                     return;
                 }
             }
-            current = System.Security.Principal.WindowsIdentity.GetCurrent();
 
             gvKeys.DataSource = publicKeys;
             gvKeys.DataBind();
@@ -83,7 +81,6 @@ namespace AdmPwd.Portal.Controls
         {
             _Default defaultPage = (_Default)this.Page;
 
-            var current = System.Security.Principal.WindowsIdentity.GetCurrent();
             using (WindowsImpersonationContext wic = ((WindowsIdentity)Page.User.Identity).Impersonate())
             {
                 try
@@ -110,7 +107,6 @@ namespace AdmPwd.Portal.Controls
                     return;
                 }
             }
-            current = System.Security.Principal.WindowsIdentity.GetCurrent();
 
             // refresh list
             InitializeKeyList();

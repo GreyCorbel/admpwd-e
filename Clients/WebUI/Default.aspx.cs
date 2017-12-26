@@ -128,8 +128,6 @@ namespace AdmPwd.Portal
 
         private void ShowHideButtonManageKeys()
         {
-            /* START: button for manage keys - only for specific users from group */
-            var current = System.Security.Principal.WindowsIdentity.GetCurrent();
             using (WindowsImpersonationContext wic = ((WindowsIdentity)Page.User.Identity).Impersonate())
             {
                 try
@@ -154,8 +152,6 @@ namespace AdmPwd.Portal
                     return;
                 }
             }
-            current = System.Security.Principal.WindowsIdentity.GetCurrent();
-            /* END: button for manage keys - only for specific users from group */
         }
 
         private void SetControlStatus()

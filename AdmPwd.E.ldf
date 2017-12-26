@@ -3,7 +3,7 @@
 # New attributes:
 #	ms-MCS-AdmPwd - string containing the password
 #	ms-MCS-AdmPwdExpirationTime - 8 byte integer containing  UTC filetime of password expiration time
-#       ms-MCS-AdmPwdHistory - multivalued string containing the password history
+# ms-MCS-AdmPwdHistory - multivalued string containing the password history
 #
 # New classes:
 #   [None]
@@ -13,9 +13,10 @@
 #  2 ... attributes
 #  3 ... reserved for remediation of SLAM OID conflict
 #
-# v 1.0, 16.5.2012, Jiri Formacek, Microsoft | Services
+# v 1.0, 16.5.2012, Jiri Formacek, Initial version
 # v 2.0, 16.2.2014, Jiri Formacek, Added ms-MCS-AdmPwdHistory
-#
+# v 3.0, 16.12.2017, Jiri Formacek, Attributes added to mayContain set of user object instead of computer object, to support managed domain acocunts
+
 version: 1
 
 dn: CN=ms-MCS-AdmPwd,CN=X
@@ -51,7 +52,7 @@ isSingleValued: TRUE
 systemOnly: FALSE
 #do not index this attribute
 searchFlags: 0
-#change to TRUE if you have multiple domains in forest and want to search against GC from admin web
+#change to TRUE if you have multiple domains in forest and want to search against GC
 isMemberOfPartialAttributeSet: FALSE
 showInAdvancedViewOnly: FALSE
 
@@ -82,9 +83,10 @@ add: schemaUpdateNow
 schemaUpdateNow: 1
 -
 
-# add new attributes to optional attributes set of computer object
+# add new attributes to optional attributes set of user object
+# note: computer object inherits from user, so new attributes are available for computer object as well
 
-dn: CN=computer,CN=X
+dn: CN=user,CN=X
 changetype: Modify
 add: mayContain
 mayContain: ms-MCS-AdmPwd

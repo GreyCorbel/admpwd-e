@@ -7,7 +7,7 @@
 
     <asp:GridView ID="gvKeys" Width="100%" runat="server" AutoGenerateColumns="False">
         <Columns>
-            <asp:BoundField DataField="KeyId" ItemStyle-Width="30px" HeaderText="Id" />
+            <asp:BoundField DataField="Id" ItemStyle-Width="30px" HeaderText="Id" />
             <asp:TemplateField HeaderText="Key value">
                 <ItemTemplate>
                     <asp:TextBox ID="txtKeyValue" CssClass="keyValueMultiline" Width="700px" Height="70px" TextMode="MultiLine" runat="server" Text='<%# Bind("Key") %>'></asp:TextBox>
