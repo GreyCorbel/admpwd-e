@@ -5,9 +5,9 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("RunAsAdmin")]
+[assembly: AssemblyTitle("RDPClient")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyProduct("RunAsAdmin")]
+[assembly: AssemblyProduct("RDPClient")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -16,15 +16,5 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("8b215a28-afe8-49df-b730-78279bf325a2")]
+[assembly: Guid("3f4d8b29-3da3-4cd4-9e55-da3b91b4a2d1")]
 
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Build and Revision Numbers
-// by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.*")]
