@@ -27,7 +27,7 @@ namespace RunAsAdmin
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-    public struct StartupInfo
+    struct StartupInfo
     {
         public int cb;
         public String reserved;
@@ -49,7 +49,7 @@ namespace RunAsAdmin
         public IntPtr stdError;
     }
 
-    internal struct ProcessInformation
+    struct ProcessInformation
     {
         public IntPtr process;
         public IntPtr thread;
@@ -58,7 +58,6 @@ namespace RunAsAdmin
     }
     class Native
     {
-
         [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern bool CreateProcessWithLogonW(
             String userName,
@@ -73,17 +72,6 @@ namespace RunAsAdmin
             ref StartupInfo startupInfo,
             out ProcessInformation processInformation);
 
-        [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern bool GetExitCodeProcess(IntPtr process, ref UInt32 exitCode);
-
-        [DllImport("Kernel32.dll", SetLastError = true)]
-        public static extern UInt32 WaitForSingleObject(IntPtr handle, UInt32 milliseconds);
-
-        [DllImport("Kernel32.dll", SetLastError = true)]
-        public static extern IntPtr GetStdHandle(IntPtr handle);
-
-        [DllImport("Kernel32.dll", SetLastError = true)]
-        public static extern bool CloseHandle(IntPtr handle);
         [DllImport("Kernel32.dll")]
         public static extern int GetLastError();
 

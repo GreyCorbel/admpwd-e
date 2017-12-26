@@ -11,12 +11,6 @@ namespace RunAsAdmin
 {
     class Program
     {
-        public const UInt32 Infinite = 0xffffffff;
-        public const Int32 Startf_UseStdHandles = 0x00000100;
-        public const Int32 StdOutputHandle = -11;
-        public const Int32 StdErrorHandle = -12;
-
-
         static void Main(string[] args)
         {
             string adminAccountName=null;
