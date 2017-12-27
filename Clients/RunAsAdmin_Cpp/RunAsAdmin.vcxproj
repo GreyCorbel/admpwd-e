@@ -140,7 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <Reference Include="AdmPwd.PDSWrapper">
-      <HintPath>..\CommonReference\AdmPwd.PDSWrapper.dll</HintPath>
+      <HintPath>..\packages\Greycorbel.AdmPwd-E.PDSWrapper.7.5.4\lib\net40\AdmPwd.PDSWrapper.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

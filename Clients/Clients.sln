@@ -5,12 +5,6 @@ VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleClient", "ConsoleClient\ConsoleClient.csproj", "{5CD22A7D-7B06-47DF-9561-A853BDFE9E92}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommonReference", "CommonReference", "{61BBC0EC-7E18-48EC-835D-AF62E00B47CB}"
-	ProjectSection(SolutionItems) = preProject
-		CommonReference\AdmPwd.PDSWrapper.dll = CommonReference\AdmPwd.PDSWrapper.dll
-		CommonReference\AdmPwd.PDSWrapper.XML = CommonReference\AdmPwd.PDSWrapper.XML
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebUI", "WebUI\WebUI.csproj", "{BF7E84DB-9696-466A-92D0-CAE871D006E7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F5FAF745-BF98-4333-882D-86C7C2D73F0B}"

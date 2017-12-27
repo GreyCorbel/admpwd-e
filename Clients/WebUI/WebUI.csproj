@@ -58,8 +58,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AdmPwd.PDSWrapper">
-      <HintPath>..\CommonReference\AdmPwd.PDSWrapper.dll</HintPath>
+    <Reference Include="AdmPwd.PDSWrapper, Version=7.5.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Greycorbel.AdmPwd-E.PDSWrapper.7.5.4\lib\net40\AdmPwd.PDSWrapper.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -86,6 +86,7 @@
     <Content Include="Default.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\PublishToDisk - inetpub.pubxml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
