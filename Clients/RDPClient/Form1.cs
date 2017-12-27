@@ -52,6 +52,7 @@ namespace RDPClient
         {
             axRdpClient.Server = server;
             axRdpClient.AdvancedSettings2.RDPPort = port;
+            axRdpClient.AdvancedSettings7.EnableCredSspSupport = true;
 
             axRdpClient.ConnectingText = "Connecting...";
             axRdpClient.ConnectedStatusText = $"Connected: {server}";

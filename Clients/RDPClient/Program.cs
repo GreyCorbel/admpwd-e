@@ -87,7 +87,7 @@ namespace RDPClient
 
         static void Usage()
         {
-            MessageBox.Show("Parameters:\n/server:<server to connect> /user:<user@domain>", "Usage", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Parameters:\n/server:<server to connect> /user:<user@domain> [/port:<rdp port>]", "Usage", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }
