@@ -75,7 +75,11 @@ namespace RDPClient
 
         private void axRdpClient_OnDisconnected(object sender, AxMSTSCLib.IMsTscAxEvents_OnDisconnectedEvent e)
         {
+            //this is not closed when form explicitly closed by user
             var r = e.discReason;
+            if (r != 2)
+                MessageBox.Show($"RDPClient disconnected wirth reason code {r}.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            Application.Exit();
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
