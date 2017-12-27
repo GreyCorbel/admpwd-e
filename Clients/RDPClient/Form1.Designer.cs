@@ -29,29 +29,31 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.axRdpClient = new AxMSTSCLib.AxMsTscAxNotSafeForScripting();
+            this.axRdpClient = new AxMSTSCLib.AxMsRdpClient9NotSafeForScripting();
             ((System.ComponentModel.ISupportInitialize)(this.axRdpClient)).BeginInit();
             this.SuspendLayout();
             // 
             // axRdpClient
             // 
             this.axRdpClient.Enabled = true;
-            this.axRdpClient.Location = new System.Drawing.Point(-3, 0);
+            this.axRdpClient.Location = new System.Drawing.Point(-1, -1);
             this.axRdpClient.Name = "axRdpClient";
             this.axRdpClient.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axRdpClient.OcxState")));
-            this.axRdpClient.Size = new System.Drawing.Size(963, 689);
+            this.axRdpClient.Size = new System.Drawing.Size(962, 520);
             this.axRdpClient.TabIndex = 0;
+            this.axRdpClient.OnDisconnected += new AxMSTSCLib.IMsTscAxEvents_OnDisconnectedEventHandler(this.axRdpClient_OnDisconnected);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(960, 689);
+            this.ClientSize = new System.Drawing.Size(960, 519);
             this.Controls.Add(this.axRdpClient);
             this.Name = "Form1";
             this.Text = "Form1";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Shown += new System.EventHandler(this.Form1_Shown);
+            this.ResizeEnd += new System.EventHandler(this.Form1_ResizeEnd);
             this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
             ((System.ComponentModel.ISupportInitialize)(this.axRdpClient)).EndInit();
             this.ResumeLayout(false);
@@ -60,7 +62,7 @@
 
         #endregion
 
-        private AxMSTSCLib.AxMsTscAxNotSafeForScripting axRdpClient;
+        private AxMSTSCLib.AxMsRdpClient9NotSafeForScripting axRdpClient;
     }
 }
 

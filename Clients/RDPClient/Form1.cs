@@ -13,6 +13,8 @@ namespace RDPClient
 {
     public partial class Form1 : Form
     {
+        FormWindowState LastWindowState = FormWindowState.Normal;
+        Size LastWindowsSize = new Size(0, 0);
         public Form1()
         {
             InitializeComponent();
@@ -20,22 +22,39 @@ namespace RDPClient
 
         private void Form1_SizeChanged(object sender, EventArgs e)
         {
-            this.axRdpClient.Width = this.ClientSize.Width;
-            this.axRdpClient.Height = this.ClientSize.Width;
-            
+            if (WindowState != LastWindowState)
+            {
+                LastWindowState = WindowState;
+
+
+                if (WindowState == FormWindowState.Maximized)
+                {
+
+                    ResizeRdpClient();
+                }
+                if (WindowState == FormWindowState.Normal)
+                {
+
+                    ResizeRdpClient();
+                }
+            }
         }
 
         public void SetCredentials(string userName, string domain, string password)
         {
             axRdpClient.UserName = userName;
-            axRdpClient.Domain = domain;
+            //axRdpClient.Domain = domain;
             var secure = (IMsTscNonScriptable)axRdpClient.GetOcx();
             secure.ClearTextPassword = password;
         }
 
-        public void SetServerName(string server)
+        public void SetServerName(string server, ushort port)
         {
             axRdpClient.Server = server;
+            axRdpClient.AdvancedSettings2.RDPPort = port;
+
+            axRdpClient.ConnectingText = "Connecting...";
+            axRdpClient.ConnectedStatusText = $"Connected: {server}";
         }
 
         private void Form1_Shown(object sender, EventArgs e)
@@ -43,19 +62,43 @@ namespace RDPClient
             try
             {
                 axRdpClient.Connect();
+                this.Text = $"RDP: {axRdpClient.Server}";
+                LastWindowsSize = this.ClientSize;
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Failed to connect to server {axRdpClient.Server}\nError: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 throw ex;
             }
-
         }
 
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        private void axRdpClient_OnDisconnected(object sender, AxMSTSCLib.IMsTscAxEvents_OnDisconnectedEvent e)
+        {
+            var r = e.discReason;
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             if (axRdpClient.Connected != 0)
                 axRdpClient.Disconnect();
+
+        }
+
+
+        private void Form1_ResizeEnd(object sender, EventArgs e)
+        {
+            if (LastWindowsSize != this.ClientSize)
+            {
+                ResizeRdpClient();
+                LastWindowsSize = ClientSize;
+            }
+        }
+
+        private void ResizeRdpClient()
+        {
+            this.axRdpClient.Size = new Size(this.ClientSize.Width, ClientSize.Height);
+            axRdpClient.Invalidate();
+            axRdpClient.Reconnect((uint)ClientSize.Width, (uint)ClientSize.Height);
 
         }
     }

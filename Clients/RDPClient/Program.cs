@@ -16,11 +16,13 @@ namespace RDPClient
         [STAThread]
         static void Main(string[] args)
         {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
 
             string adminAccountName = null;
             string server = null;
             string domainName = null;
-
+            ushort port = 3389;
 
             foreach (string arg in args)
             {
@@ -34,6 +36,12 @@ namespace RDPClient
                     server = arg.Substring(8);
                     continue;
                 }
+                if (arg.StartsWith("/port:", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    ushort.TryParse(arg.Substring(6), out port);
+                    continue;
+                }
+
                 if (arg.StartsWith("/?", StringComparison.CurrentCultureIgnoreCase))
                 {
                     Usage();
@@ -67,10 +75,8 @@ namespace RDPClient
             {
                 var form = new Form1();
                 form.SetCredentials(adminAccountName, domainName, password);
-                form.SetServerName(server);
+                form.SetServerName(server, port);
 
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(form);
             }
             catch(Exception)
