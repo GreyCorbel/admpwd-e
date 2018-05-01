@@ -1,5 +1,4 @@
 ﻿using AdmPwd.Portal.Utilities;
-using AdmPwd.PDSUtils.PdsProxy;
 using AdmPwd.Types;
 using Resources;
 using System;
@@ -8,6 +7,7 @@ using System.Security.Principal;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.Win32;
+using System.Threading.Tasks;
 
 namespace AdmPwd.Portal.Controls
 {
@@ -73,7 +73,7 @@ namespace AdmPwd.Portal.Controls
             this.InitializeControls();
 
             _Default defaultPage = (_Default)this.Page;
-            PasswordInfo data = null;
+            //GetPasswordResponse data = null;
 
             // read configuration if PasswordHistory is visible
             bool isPasswordHistoryVisible = false;
@@ -86,7 +86,37 @@ namespace AdmPwd.Portal.Controls
             {
                 try
                 {
-                    data = PDSUtils.PdsWrapper.GetLocalAdminPassword(this.cboForestNames.Text, this.textComputerName.Text, isPasswordHistoryVisible, false); //or false if we don't need password history
+                    PasswordInfo data = PDSUtils.PdsWrapper.GetLocalAdminPassword(this.cboForestNames.Text, this.textComputerName.Text, isPasswordHistoryVisible, false); //or false if we don't need password history
+                    if (!String.IsNullOrEmpty(data.Password))
+                    {
+                        this.btnRecoverySubmit.Visible = false;
+                        textComputerName.Enabled = false;
+
+                        this.PanelAdminPasswordData.Visible = true;
+                        this.textAdminPassword.Text = data.Password;
+                        this.textAdminPasswordExpiration.Text = data.ExpirationTimestamp > DateTime.MinValue ? data.ExpirationTimestamp.ToString() : string.Empty;
+                        this.textAdminPasswordComputerDN.Text = data.DistinguishedName;
+
+                        if (isPasswordHistoryVisible)
+                        {
+                            if (data.PasswordHistory.Count > 0)
+                            {
+                                PanelPasswordHistory.Visible = true;
+                                tblPasswordHistoryList.Visible = true;
+                                foreach (PasswordHistory pi in data.PasswordHistory)
+                                {
+                                    TableRow rw = new TableRow();
+                                    rw.Cells.Add(new TableCell() { Text = pi.Password });
+                                    rw.Cells.Add(new TableCell() { Text = pi.ValidSince.ToString() });
+                                    rw.Cells.Add(new TableCell() { Text = pi.ValidUntil.ToString() });
+                                    tblPasswordHistoryList.Rows.Add(rw);
+                                }
+                            }
+                            else
+                                PanelPasswordHistory.Visible = false;
+                        }
+
+                    }
                 }
                 catch (AutodiscoverException ex)
                 {
@@ -129,40 +159,12 @@ namespace AdmPwd.Portal.Controls
             }
             current = System.Security.Principal.WindowsIdentity.GetCurrent();
 
-            if (!String.IsNullOrEmpty(data.Password))
-            {
-                this.btnRecoverySubmit.Visible = false;
-                textComputerName.Enabled = false;
-
-                this.PanelAdminPasswordData.Visible = true;
-                this.textAdminPassword.Text = data.Password;
-                this.textAdminPasswordExpiration.Text = data.ExpirationTimestamp > DateTime.MinValue ? data.ExpirationTimestamp.ToString() : string.Empty;
-                this.textAdminPasswordComputerDN.Text = data.DistinguishedName;
-
-                if (isPasswordHistoryVisible)
-                {
-                    if (data.PasswordHistory.Count > 0)
-                    {
-                        PanelPasswordHistory.Visible = true;
-                        tblPasswordHistoryList.Visible = true;
-                        foreach (PasswordHistory pi in data.PasswordHistory)
-                        {
-                            TableRow rw = new TableRow();
-                            rw.Cells.Add(new TableCell() { Text = pi.Password });
-                            rw.Cells.Add(new TableCell() { Text = pi.ValidSince.ToString() });
-                            rw.Cells.Add(new TableCell() { Text = pi.ValidUntil.ToString() });
-                            tblPasswordHistoryList.Rows.Add(rw);
-                        }
-                    }
-                    else
-                        PanelPasswordHistory.Visible = false;
-                }
 
                 defaultPage.ShowBackToNewRequestButton();
 
                 this.textUpdateExpirationDateNewValue.Text = DateTime.Now.ToString();
                 PanelExpirationDateChange.Visible = true;
-            }
+            
         }
 
         protected void btnUpdateExpirationDate_Click(object sender, EventArgs e)
