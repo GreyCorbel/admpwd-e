@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -48,23 +49,40 @@ namespace RDPClient
                     return;
                 }
             }
-            if (adminAccountName == null || server == null)
+            if (server == null)
             {
                 Usage();
                 return;
             }
-
-            if (adminAccountName.Contains("\\"))
-            {
-                string[] pairs = adminAccountName.Split('\\');
-                domainName = pairs[0];
-                adminAccountName = pairs[1];
-            }
-            string password = null;
+            PasswordInfo pwdInfo = null;
             try
             {
-                PasswordInfo pwdInfo = PdsWrapper.GetManagedAccountPassword(null, adminAccountName, false);
-                password = pwdInfo.Password;
+                //user name to use
+                if (adminAccountName.Contains('\\'))
+                {
+                    //domain\sAMAccountName
+                    string[] pairs = adminAccountName.Split('\\');
+                    domainName = pairs[0];
+                    adminAccountName = pairs[1];
+                    pwdInfo = PdsWrapper.GetManagedAccountPassword(null, adminAccountName, false);
+                }
+                else if (adminAccountName.Contains('@'))
+                {
+                    //upn
+                    pwdInfo = PdsWrapper.GetManagedAccountPassword(null, adminAccountName, false);
+                }
+                else
+                {
+                    //local account
+                    domainName = server;
+                    if (adminAccountName == null)
+                    {
+                        //default admin name
+                        adminAccountName = "administrator";
+                    }
+                    pwdInfo = PdsWrapper.GetLocalAdminPassword(null, server, false, false);
+
+                }
             }
             catch (Exception ex)
             {
@@ -73,11 +91,22 @@ namespace RDPClient
             }
             try
             {
-                var form = new Form1();
-                form.SetCredentials(adminAccountName, domainName, password);
+                var form = new MainForm();
+
+                var cfg = new Configuration();
+                Int64 windowSize = cfg.LastWindowSize;
+                
+                if(windowSize>0)
+                {
+                    form.SetSize(windowSize);
+                }
+                form.SetCredentials(adminAccountName, domainName, pwdInfo.Password);
                 form.SetServerName(server, port);
 
                 Application.Run(form);
+
+                cfg.LastWindowSize = form.GetSize();
+                cfg.Update();
             }
             catch(Exception)
             {

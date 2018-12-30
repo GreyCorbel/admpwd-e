@@ -132,7 +132,7 @@ namespace AdmPwd.Portal
             {
                 try
                 {
-                    if (PDSUtils.PdsWrapper.IsKeyAdmin())
+                    if (PDSUtils.PdsWrapper.IsPDSAdmin())
                     {
                         pnlManageCryptoKeysNavigation.Visible = true;
                         btnManageCryptoKeys.Visible = true;

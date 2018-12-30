@@ -11,177 +11,205 @@
         </member>
         <member name="M:AdmPwd.PDSUtils.PdsWrapper.GenerateKeyPair(System.Int32)">
             <summary>
-            Calls PDS to generate new RSA key pair.
-            PDS keeps private key of key pair in own storage and uses it for password decryption. 
-            Public key is put to GPO by an administrator and managed machines use it to encrypt the password of managed local admin account when reporting it to AD.
-            PDS also uses public key to encrypt password of managed domain account - ID of key to use is specified in PDS configuration file.
-            </summary>
-            <param name="KeySize">Specifies desired RSA key size
-            Key size must be one of those allowed by PDS - see <see cref="M:AdmPwd.PDSUtils.PdsWrapper.GetSupportedKeySizes"/> method
-            </param>
-            <returns>Return public key of newly generated key pair, along with key ID assigned to newly generated key pair</returns>
-            <remarks>
-            <para>Caller must have Key Admin role. For callers without role, AccessDenied exception is thrown</para>
-            <para>Call is audited on PDS</para>
-            </remarks>
+       <para>Calls PDS to generate new RSA key pair.</para>
+       <para>
+        PDS keeps private key of key pair in own storage and uses it for password decryption.
+         Public key is put to GPO by an administrator and managed machines use it to encrypt the password of managed local admin account when reporting it to AD.
+      </para>
+       <para>PDS also uses public key to encrypt password of managed domain account - ID of key to use is specified in PDS configuration file.</para>
+    </summary><param name="KeySize">
+      Specifies desired RSA key size<br />
+       Key size must be one of those allowed by PDS - see <see cref="M:AdmPwd.PDSUtils.PdsWrapper.GetSupportedKeySizes" /> method
+    </param><returns>Return public key of newly generated key pair, along with key ID assigned to newly generated key pair</returns><remarks>
+       <para>Caller must have Key Admin role. For callers without role, AccessDenied exception is thrown. To find out, if caller has Key Admin role, call method <see cref="M:AdmPwd.PDSUtils.PdsWrapper.IsPDSAdmin" />.</para>
+       <para>By default, Key Admin role is assigned to Enterprise Admins group and can be changed via PDS configuration file.</para>
+       <para>Call is audited on PDS</para>
+    </remarks>
         </member>
         <member name="M:AdmPwd.PDSUtils.PdsWrapper.GetPublicKey(System.UInt32)">
             <summary>
-            Asks PDS to return public key with specified key ID
-            </summary>
-            <param name="KeyId">Identifies key pair for which public key is returned</param>
-            <returns>Returns public key of key pair with given KeyID, along with key ID</returns>
-            <remarks>
-            <para>No specific permissions required</para>
-            <para>Call is not audited</para>
-            </remarks>
+       Asks PDS to return public key with specified key ID
+    </summary><param name="KeyId">Identifies key pair for which public key is returned</param><returns>Returns public key of key pair with given KeyID, along with key ID</returns><remarks>
+       <para>No specific permissions required</para>
+       <para>Call is not audited</para>
+    </remarks>
         </member>
         <member name="M:AdmPwd.PDSUtils.PdsWrapper.GetPublicKeys">
             <summary>
-            Asks PDS to return public keys for all available key pairs.
-            </summary>
-            <returns>Returns list of all public keys managed by PDS, along with type of the key, size in bits, and key ID</returns>
-            <remarks>
-            <para>No specific permissions required</para>
-            <para>Call is not audited</para>
-            </remarks>
+       Asks PDS to return public keys for all available key pairs.
+    </summary><returns>Returns list of all public keys managed by PDS, along with type of the key, size in bits, and key ID</returns><remarks>
+       <para>No specific permissions required</para>
+       <para>Call is not audited</para>
+    </remarks>
         </member>
         <member name="M:AdmPwd.PDSUtils.PdsWrapper.ResetLocalAdminPassword(System.String,System.String,System.DateTime)">
             <summary>
-            Calls PDS to request reset of managed local admin password for given computer in given AD forest.
-            </summary>
-            <param name="ForestName">Name of AD forest.
-            Forest must be marked as supported in PDS configuration.
-            For local forest, pass null as parameter value</param>
-            <param name="ComputerName">Name of computer where password of local admin account shall be reset</param>
-            <param name="WhenEffective">When password reset shall occur. Password will be reset during next GPO update cycle on given computer after this time </param>
-            <returns>Information about result of operation along with computer name and computer DN</returns>
-            <remarks>
-            <para>Caller must have Reset Local Admin Passsword permission on given computer object</para>
-            <para>Call is audited on PDS</para>
-            </remarks>
+       Calls PDS to request reset of managed local admin password for given computer in given AD forest.
+    </summary><param name="ForestName">
+      Name of AD forest.
+       Forest must be marked as supported in PDS configuration.
+       For local forest, pass null as parameter value
+    </param><param name="ComputerName">Name of computer where password of local admin account shall be reset</param><param name="WhenEffective">When password reset shall occur. Password will be reset during next GPO update cycle on given computer after this time </param><returns>Information about result of operation along with computer name and computer DN</returns><remarks>
+       <para>Caller must have Reset Local Admin Passsword permission on given computer object</para>
+       <para>Call is audited on PDS</para>
+    </remarks>
         </member>
         <member name="M:AdmPwd.PDSUtils.PdsWrapper.GetLocalAdminPassword(System.String,System.String,System.Boolean,System.Boolean)">
             <summary>
-            Retrieves password of managed local admin account of given computer in given AD forest
-            </summary>
-            <param name="ForestName">Name of AD forest.
-            Forest must be marked as supported in PDS configuration.
-            For local forest, pass null as parameter value</param>
-            <param name="ComputerName">Name of computer where password of local admin account shall be reset</param>
-            <param name="IncludePasswordHistory">Whether or not to include password history</param>
-            <param name="ComputerIsDeleted">Whether computer is deleted or not.
-            Note: there may be multiple deleted computer objects with the same name. In such case, passwoord for most recently computer is returned
-            </param>
-            <returns>Password, current password expiration time and optional password history</returns>
-            <remarks>
-            <para>Caller must have Read Local Admin Passsword permission on given computer object</para>
-            <para>Call is audited on PDS</para>
-            </remarks>
+       Calls PDS to retrieve password of managed local admin account of given computer in given AD forest
+    </summary><param name="ForestName">
+      Name of AD forest.
+       Forest must be marked as supported in PDS configuration.
+       For local forest, pass null as parameter value
+    </param><param name="ComputerName">
+      Name of computer where password of local admin account shall be reset. Name of the computer can be passed as one of the following:
+         * Hostname, such as MyComputer
+         * FQDN, such as mycomputer.mydomain.com
+         * Distinguished name, such as cn=MyComputer,ou=MyComputers,dc=mydomain,dc=com
+    </param><param name="IncludePasswordHistory">Whether or not to include password history</param><param name="ComputerIsDeleted">
+      Whether computer is deleted or not.
+      Note: there may be multiple deleted computer objects with the same name. In such case, password for most recently deleted computer is returned
+    </param><returns>Password, current password expiration time and optional password history</returns><remarks>
+       <para>Name of local admin account is not stored by solution. Caller is expected to know name of local managed account</para>
+       <para>
+        PDS does not try to guess domain or forest name from computer name - it searches against Global Catalog interface of AD forest passed in <paramref name="ForestName" /> parameter
+      </para>
+       <para>Caller must have Read Local Admin Passsword permission on given computer object</para>
+       <para>Call is audited on PDS</para>
+    </remarks>
         </member>
         <member name="M:AdmPwd.PDSUtils.PdsWrapper.GetManagedAccountPassword(System.String,System.String,System.Boolean)">
             <summary>
-            Retrieves password of managed account in given AD forest.
-            </summary>
-            <param name="ForestName">
-            Name of AD forest.
-            <para>Forest must be marked as supported in PDS configuration.
-            For local forest (forest where PDS is installed), you can pass null as parameter value
-            </para>
-            </param>
-            <param name="AccountName">Name of account where password shall be read.
-            Account name can be passed as sAMAccountName (without domain), userPrincipalName, or distinguishedName.
-            </param>
-            <param name="IncludePasswordHistory">Whether or not to include password history</param>
-            <returns>Password, current password expiration time and optional password history</returns>
-            <remarks>
-            <para>Caller must have Read Local Admin Passsword permission on given managed account object</para>
-            <para>Call is audited on PDS</para>
-            </remarks>
+       Retrieves password of managed account in given AD forest.
+    </summary><param name="ForestName">
+       Name of AD forest.
+       <para>
+        Forest must be marked as supported in PDS configuration.
+         For local forest (forest where PDS is installed), you can pass null as parameter value
+      </para>
+    </param><param name="AccountName">
+      Name of account where password shall be read.
+       Account name can be passed as one of the following:
+         * sAMAccountName (without domain)
+         * userPrincipalName
+         * distinguishedName
+    </param><param name="IncludePasswordHistory">Whether or not to include password history</param><returns>Password, current password expiration time and optional password history</returns><remarks>
+       <para>
+        PDS does not try to guess domain or forest name from account name - it searches against Global Catalog interface of AD forest passed in <paramref name="ForestName" /> parameter for account as specified in <paramRef name="AccountName" />
+      </para>
+       <para>Caller must have Read Local Admin Passsword permission on given managed account object</para>
+       <para>Call is audited on PDS</para>
+    </remarks>
         </member>
-        <member name="M:AdmPwd.PDSUtils.PdsWrapper.IsKeyAdmin">
+        <member name="M:AdmPwd.PDSUtils.PdsWrapper.IsPDSAdmin">
             <summary>
-            Returns information whether or not the caller is in Key Admin role on PDS
-            </summary>
-            <returns>True if caller is in Key Admin role on PDS. Otherwise returns false.</returns>
-            <remarks>
-            <para>Used by Web UI to properly render UI and allow users in KeyAdmin role to see key pair management UI</para>
-            <para>No specific permissions required</para>
-            <para>Call is not audited</para>
-            </remarks>
+       Calls PDS to return information whether or not the caller is in Key Admin role on PDS
+    </summary><returns>True if caller is in Key Admin role on PDS. Otherwise returns false.</returns><remarks>
+       <para>Can be used by various client tools to properly render UI and allow users in KeyAdmin role to see key pair management UI</para>
+       <para>No specific permissions required</para>
+       <para>Call is not audited</para>
+    </remarks>
         </member>
         <member name="M:AdmPwd.PDSUtils.PdsWrapper.GetSupportedKeySizes">
             <summary>
-            Used to retrieve key sizes supported by PDS.
-            </summary>
-            <returns>List of supported key sizes, in bits</returns>
-            <remarks>
-            <para>PDS only creates key pairs of supported sizes; however it can decrypt passwords encrypted by any valid RSA key - see <see cref="M:AdmPwd.PDSUtils.PdsWrapper.GenerateKeyPair(System.Int32)"/> method to see how to generate new key pair </para>
-            <para>No specific permissions required</para>
-            <para>Call is not audited</para>
-            </remarks>
+       Calls PDS to retrieve key sizes supported by PDS.
+    </summary><returns>List of supported key sizes, in bits</returns><remarks>
+       <para>
+        PDS only creates key pairs of supported sizes; however it can decrypt passwords encrypted by any valid RSA key - see <see cref="M:AdmPwd.PDSUtils.PdsWrapper.GenerateKeyPair(System.Int32)" /> method to see how to generate new key pair
+      </para>
+       <para>Supported key sizes are configured in PDS configuration file.</para>
+       <para>RSA CSP used by solution supports key sizes up to 16384 bits in 8-bit increments on Windows OS.</para>
+       <para>No specific permissions required</para>
+       <para>Call is not audited</para>
+    </remarks>
         </member>
         <member name="M:AdmPwd.PDSUtils.PdsWrapper.GetKeyAdminsRoleName">
             <summary>
-            Used to retrievee name of AD group that implements Key Admin role. Members of the group hold Key Admin role on PDS
-            </summary>
-            <returns>Returns name of AD group that is configured on PDS as Key Admin role group</returns>
-            <remarks>
-            <para>No specific permissions required</para>
-            <para>Call is not audited</para>
-            </remarks>
+       Calls PDS to retrieve name of AD group that implements Key Admin role. Members of the group hold Key Admin role on PDS
+    </summary><returns>Returns name of AD group that is configured on PDS as Key Admin role group</returns><remarks>
+       <para>By default, this role is held by Enterprise Admins group. Role assignment can be changed in PDS configuration file.</para>
+       <para>No specific permissions required</para>
+       <para>Call is not audited</para>
+    </remarks>
         </member>
         <member name="M:AdmPwd.PDSUtils.PdsWrapper.GetUserPermissions(System.String,System.String,System.String)">
             <summary>
-            Used to retrieve information about AdmPwd permissions that given user has on computer object, as seen by PDS
-            </summary>
-            <param name="forestName">Name of AD forest.
-            Forest must be marked as supported in PDS configuration.
-            For local forest, pass null as parameter value</param>
-            <param name="ComputerName">Name of computer where password of local admin account shall be reset</param>
-            <param name="userUpn">UserPrincipalName of user in question.</param>
-            <returns>List of solution specific permissions PDS finds for given user for given computer object </returns>
-            <remarks>
-            <para>This method uses Kerberos S2U4Self logon to obtain user's Kerberos ticket with group memebership</para>
-            <para>No specific permissions required</para>
-            <para>Call is not audited</para>
-            </remarks>
+       Calls PDS to retrieve information about AdmPwd.E permissions that given user has on computer object, as seen by PDS
+    </summary><param name="ForestName">
+      Name of AD forest.
+       Forest must be marked as supported in PDS configuration.
+       For local forest, pass null as parameter value
+    </param><param name="ComputerName">Name of computer where password of local admin account shall be reset</param><param name="UserUpn">UserPrincipalName of user in question.</param><returns>List of solution specific permissions PDS finds for given user for given computer object </returns><remarks>
+       <para>This method uses Kerberos S2U4Self logon to obtain user's Kerberos ticket with security group membership of user account in question</para>
+       <para>No specific permissions required</para>
+       <para>Call is not audited</para>
+    </remarks>
         </member>
         <member name="M:AdmPwd.PDSUtils.PdsWrapper.GetEnvironmentStats">
             <summary>
-            Retrieves environment status for managed environment: list of domains in each managed forest, and number of managed machines in each domain, and license status for managed environment
-            </summary>
-            <returns>Environment status for the solution</returns>
-            <remarks>
-            <para>No specific permissions required</para>
-            <para>Call is not audited</para>
-            </remarks>
+       Calls PDs to retrieve environment status for managed environment:
+       * List of domains in each managed forest, along with number of managed machines and domain accounts in each domain
+       * Overall status for each AD forest, including license expiration and consumption
+    </summary><returns>Environment status for the solution</returns><remarks>
+       <para>No specific permissions required</para>
+       <para>Call is not audited</para>
+    </remarks>
         </member>
         <member name="M:AdmPwd.PDSUtils.PdsWrapper.ResetManagedAccountPassword(System.String,System.String,System.DateTime)">
-             <summary>
-             Calls PDS to request reset of managed account password in given AD forest.
-             </summary>
-             <param name="ForestName">Name of AD forest.
-             <para>
-             Forest must be marked as supported in PDS configuration.
-             For local forest (forest where PDS is installed), you can pass null as parameter value
-             </para>
-            </param>
-             <param name="Name">Name of account where password shall be reset.
-             Account name can be passed as sAMAccountName (without domain), userPrincipalName, or distinguishedName.
-             </param>
-             <param name="WhenEffective">When password reset shall occur. Password will be reset during next PDS management cycle - see passwordManagementInterval in PDS config file.</param>
-             <returns>Information about result of operation along with account name and DN</returns>
-             <remarks>
-             <para>Caller must have Reset Local Admin Passsword permission on given managed account object</para>
-             <para>Call is audited on PDS</para>
-             </remarks>
-        </member>
-        <member name="M:AdmPwd.PDSUtils.PdsWrapper.GetSupportedForests">
             <summary>
-            Return list of supported forests as configured in GPO, or null, if there is nothing configured in PDS configuration
-            </summary>
-            <returns>List of names of AD forests as known by connected PDS instance</returns>
+       Calls PDS to request reset of managed account password in given AD forest.
+    </summary><param name="ForestName">
+      Name of AD forest.
+       <para>
+         Forest must be marked as supported in PDS configuration.
+         For local forest (forest where PDS is installed), you can pass null as parameter value
+      </para>
+    </param><param name="AccountName">
+      Name of account where password shall be reset.
+       Account name can be passed as one of the following:
+         * sAMAccountName (without domain)
+         * userPrincipalName
+         * distinguishedName
+    </param><param name="WhenEffective">When password reset shall occur. Password will be reset during next PDS management cycle - see passwordManagementInterval in PDS config file.</param><returns>Information about result of operation along with account name and DN</returns><remarks>
+       <para>
+        PDS does not try to guess domain or forest name from account name - it searches against Global Catalog interface of AD forest passed in <paramref name="ForestName" /> parameter
+      </para>
+       <para>Caller must have Reset Local Admin Passsword permission on given managed account object</para>
+       <para>Call is audited on PDS</para>
+    </remarks>
+        </member>
+        <member name="M:AdmPwd.PDSUtils.PdsWrapper.GetSupportedForests(System.Boolean)">
+            <summary>
+      Calls PDS to get list of supported forests as configured in PDS configuration file.
+    </summary><param name="ReturnCredentials">
+      Whether or not return user name, encrypted password and key id.
+    </param><returns>List of names of AD forests as known by connected PDS instance (optionaly user name, encrypted password and key id), or null if no specific AD forests are configured and PDS just covers local AD forest.</returns><remarks>
+      <para>No specific permissions required</para>
+      <para>Call is not audited</para>
+    </remarks>
+        </member>
+        <member name="M:AdmPwd.PDSUtils.PdsWrapper.UpsertSupportedForest(System.String,System.String,System.String,System.UInt32)">
+            <summary>
+      Calls PDS to request add or update supported forest to configuration file in PDS.
+    </summary><param name="ForestName">
+      Name of new or update supported forest.
+    </param><param name="User">
+      Name of account which use for ldap connection to supported forest.
+      Account name can be passed as one of the following:
+      <list type="bullet">
+        <item>sAMAccountName (with domain)</item>
+        <item>userPrincipalName</item>
+      </list>
+      <para>Together with parameter "User" must set parameters "Password" and "KeyId".</para>
+    </param><param name="Password">
+      Password for account which use for ldap connection to supported forest.
+      <para>Together with parameter "Password" must set parameters "User" and "KeyId".</para>
+    </param><param name="KeyId">
+      Identifies key pair to which the password is encrypted.
+      <para>Together with parameter "KeyId" must set parameters "User" and "Password".</para>
+    </param><returns>List of PDS instances where added or updated supported forest.</returns><para>When parameter User, Password and KeyID are not set, use default PDS credentials</para><para>
+      Caller must have PDS Admin role. For callers without role, AccessDenied exception is thrown. To find out, if caller has PDS Admin role, call method <see cref="M:AdmPwd.PDSUtils.PdsWrapper.IsPDSAdmin" />.
+    </para><para>By default, PDS Admin role is assigned to Enterprise Admins group and can be changed via PDS configuration file.</para><para>Call is audited on PDS</para>
         </member>
         <member name="T:AdmPwd.Types.PasswordResetState">
             <summary>
@@ -557,6 +585,21 @@
             Forest DNS name is not listed as supported AD forest in PDS configuration
             </summary>
         </member>
+        <member name="F:AdmPwd.Types.IssueType.AccountNotFound">
+            <summary>
+            Managed domain account was not found
+            </summary>
+        </member>
+        <member name="F:AdmPwd.Types.IssueType.AccountAmbiguous">
+            <summary>
+            Name of managed domain account is not unique
+            </summary>
+        </member>
+        <member name="F:AdmPwd.Types.IssueType.AccountNotLicensed">
+            <summary>
+            Not enough licenses to process the request
+            </summary>
+        </member>
         <member name="T:AdmPwd.Types.PDSException">
             <summary>
             Contains information about error encountered on PDS side
@@ -579,7 +622,8 @@
         </member>
         <member name="F:AdmPwd.Types.PDSException.AdditionalInformation">
             <summary>
-            Issue specific data. Currently used to return list of computers with the same name for <see cref="F:AdmPwd.Types.IssueType.ComputerAmbiguous" /> issue
+            <para>Issue specific data. Currently used to return list of AD objects with the same name for <see cref="F:AdmPwd.Types.IssueType.ComputerAmbiguous" /> or <see cref="F:AdmPwd.Types.IssueType.AccountAmbiguous"/> issues.</para>
+            <para>In such case, maximum 100 of ambiguous entries is returned in this member.</para>
             </summary>
         </member>
         <member name="M:AdmPwd.Types.PDSException.#ctor(System.String,System.Exception)">
@@ -588,6 +632,53 @@
             </summary>
             <param name="message">Exception message</param>
             <param name="ex">Inner exception</param>
+        </member>
+        <member name="T:AdmPwd.Types.SupportedForest">
+            <summary>
+            Contains details about supported forest configuration
+            </summary>
+        </member>
+        <member name="P:AdmPwd.Types.SupportedForest.ForestName">
+            <summary>
+            DNS name of AD forest
+            </summary>
+        </member>
+        <member name="P:AdmPwd.Types.SupportedForest.User">
+            <summary>
+            Username to use when connecting to the forest
+            </summary>
+        </member>
+        <member name="P:AdmPwd.Types.SupportedForest.Password">
+            <summary>
+            Encrypted password associated with UserName<br/>
+            Note: Password is returned encrypted so as not to protect it against unwanted revealing.
+            </summary>
+        </member>
+        <member name="P:AdmPwd.Types.SupportedForest.KeyId">
+            <summary>
+            ID of encryption key that was used to encrypt the password
+            </summary>
+        </member>
+        <member name="T:AdmPwd.Types.AdmPwdSvcStatus">
+            <summary>
+            Status information about PDS instance
+            </summary>
+        </member>
+        <member name="P:AdmPwd.Types.AdmPwdSvcStatus.Status">
+            <summary>
+            The result of adding or editing supported forest.
+            </summary>
+            <value>OK,ERROR</value>
+        </member>
+        <member name="P:AdmPwd.Types.AdmPwdSvcStatus.Endpoint">
+            <summary>
+            PDS instance endpoint.
+            </summary>
+        </member>
+        <member name="P:AdmPwd.Types.AdmPwdSvcStatus.Message">
+            <summary>
+            Additional status message
+            </summary>
         </member>
     </members>
 </doc>
