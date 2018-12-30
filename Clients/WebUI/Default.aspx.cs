@@ -4,6 +4,8 @@ using AdmPwd.Types;
 using Resources;
 using System;
 using System.Security.Principal;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Web.UI;
 
 namespace AdmPwd.Portal
@@ -128,11 +130,13 @@ namespace AdmPwd.Portal
 
         private void ShowHideButtonManageKeys()
         {
-            using (WindowsImpersonationContext wic = ((WindowsIdentity)Page.User.Identity).Impersonate())
+            //using (WindowsImpersonationContext wic = ((WindowsIdentity)Page.User.Identity).Impersonate())
+            using (WindowsImpersonationContext wic = ((WindowsIdentity)Thread.CurrentPrincipal.Identity).Impersonate())
             {
                 try
                 {
-                    if (PDSUtils.PdsWrapper.IsPDSAdmin())
+                    bool isAdmin = PDSUtils.PdsWrapper.IsPDSAdmin();
+                    if (isAdmin)
                     {
                         pnlManageCryptoKeysNavigation.Visible = true;
                         btnManageCryptoKeys.Visible = true;

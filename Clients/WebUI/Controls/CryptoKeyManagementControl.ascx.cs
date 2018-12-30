@@ -1,17 +1,17 @@
 ﻿using AdmPwd.Portal.Utilities;
-using AdmPwd.PDSUtils.PdsProxy;
 using AdmPwd.Types;
 using Resources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace AdmPwd.Portal.Controls
 {
     public partial class CryptoKeyManagementControl : System.Web.UI.UserControl
     {
-
         #region Methods
 
         public void Initialize()
@@ -24,22 +24,24 @@ namespace AdmPwd.Portal.Controls
 
             if (!IsPostBack)
             {
-                try
+                using (WindowsImpersonationContext wic = ((WindowsIdentity)Thread.CurrentPrincipal.Identity).Impersonate())
                 {
-                    // get supported key sizes
-                    ddlKeySize.DataSource = PDSUtils.PdsWrapper.GetSupportedKeySizes();
-                    ddlKeySize.DataBind();
-                }
-                catch (AutodiscoverException ex)
-                {
-                    labelError.Text = Messages.Errors_ServiceNotAvailable + " - " + ex.Message;
-                    PanelError.Visible = true;
-                    PanelKeyList.Visible = false;
-                    return;
+                    try
+                    {
+                        var sizes = PDSUtils.PdsWrapper.GetSupportedKeySizes();
+                        ddlKeySize.DataSource = sizes;
+                        ddlKeySize.DataBind();
+                        this.InitializeKeyList();
+                    }
+                    catch (AutodiscoverException ex)
+                    {
+                        labelError.Text = Messages.Errors_ServiceNotAvailable + " - " + ex.Message;
+                        PanelError.Visible = true;
+                        PanelKeyList.Visible = false;
+                        return;
+                    }
                 }
             }
-
-            this.InitializeKeyList();
         }
 
         private void InitializeKeyList()
@@ -51,6 +53,16 @@ namespace AdmPwd.Portal.Controls
                 {
                     // get public keys list
                     publicKeys = PDSUtils.PdsWrapper.GetPublicKeys();
+                        gvKeys.DataSource = publicKeys;
+                        gvKeys.DataBind();
+
+                        if (publicKeys.Count() == 0)
+                        {
+                            labelResult.Text = Messages.EKM_NoKeysInStorage + "!";
+                            PanelResult.Visible = true;
+                        }
+                        else
+                            PanelResult.Visible = false;
                 }
                 catch (AutodiscoverException ex)
                 {
@@ -61,16 +73,7 @@ namespace AdmPwd.Portal.Controls
                 }
             }
 
-            gvKeys.DataSource = publicKeys;
-            gvKeys.DataBind();
 
-            if (publicKeys.Count() == 0)
-            {
-                labelResult.Text = Messages.EKM_NoKeysInStorage + "!";
-                PanelResult.Visible = true;
-            }
-            else
-                PanelResult.Visible = false;
         }
 
         #endregion

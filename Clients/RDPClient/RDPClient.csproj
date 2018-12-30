@@ -34,8 +34,8 @@
     <ApplicationIcon>app1.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AdmPwd.PDSWrapper">
-      <HintPath>..\CommonReference\AdmPwd.PDSWrapper.dll</HintPath>
+    <Reference Include="AdmPwd.PDSWrapper, Version=7.5.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Greycorbel.AdmPwd-E.PDSWrapper.7.5.5\lib\net45\AdmPwd.PDSWrapper.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -83,6 +83,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
