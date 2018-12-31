@@ -23,7 +23,7 @@
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <Keyword>ManagedCProj</Keyword>
     <RootNamespace>RunAsAdmin</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
     <ProjectName>RunAsAdmin_Cpp</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -140,7 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <Reference Include="AdmPwd.PDSWrapper">
-      <HintPath>..\packages\Greycorbel.AdmPwd-E.PDSWrapper.7.5.5\lib\net45\AdmPwd.PDSWrapper.dll</HintPath>
+      <HintPath>..\packages\Greycorbel.AdmPwd-E.PDSWrapper.7.6.0\lib\net45\AdmPwd.PDSWrapper.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

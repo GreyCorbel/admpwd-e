@@ -14,7 +14,7 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="Docs">
-      <UniqueIdentifier>{033caa64-98f9-4ccb-bcf6-b028c8e84f21}</UniqueIdentifier>
+      <UniqueIdentifier>{7bf5e00d-cf69-4b4c-9b80-35098bd0dc5c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
