@@ -1,10 +1,45 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <PdsWrapper>
+  <UpsertSupportedForest>
+    <summary>
+      Calls PDS to request add or update supported forest to configuration file in PDS.
+    </summary>
+    <param name="ForestName">
+      Name of new or update supported forest.
+    </param>
+    <param name="User">
+      Name of account which use for ldap connection to supported forest.
+      Account name can be passed as one of the following:
+      <list type="bullet">
+        <item>sAMAccountName (with domain)</item>
+        <item>userPrincipalName</item>
+      </list>
+      <para>Together with parameter "User" must set parameters "Password" and "KeyId".</para>
+    </param>
+    <param name="Password">
+      Password for account which use for ldap connection to supported forest.
+      <para>Together with parameter "Password" must set parameters "User" and "KeyId".</para>
+    </param>
+    <param name="KeyId">
+      Identifies key pair to which the password is encrypted.
+      <para>Together with parameter "KeyId" must set parameters "User" and "Password".</para>
+    </param>
+    <returns>List of PDS instances where added or updated supported forest.</returns>
+    <para>When parameter User, Password and KeyID are not set, use default PDS credentials</para>
+    <para>
+      Caller must have PDS Admin role. For callers without role, AccessDenied exception is thrown. To find out, if caller has PDS Admin role, call method <see cref="IsPDSAdmin"/>.
+    </para>
+    <para>By default, PDS Admin role is assigned to Enterprise Admins group and can be changed via PDS configuration file.</para>
+    <para>Call is audited on PDS</para>
+  </UpsertSupportedForest>
   <GetSupportedForests>
     <summary>
       Calls PDS to get list of supported forests as configured in PDS configuration file.
     </summary>
-    <returns>List of names of AD forests as known by connected PDS instance, or null if no specific AD forests are configured and PDS just covers local AD forest.</returns>
+    <param name="ReturnCredentials">
+      Whether or not return user name, encrypted password and key id.
+    </param>
+    <returns>List of names of AD forests as known by connected PDS instance (optionaly user name, encrypted password and key id), or null if no specific AD forests are configured and PDS just covers local AD forest.</returns>
     <remarks>
       <para>No specific permissions required</para>
       <para>Call is not audited</para>
@@ -24,11 +59,9 @@
      <param name="AccountName">
       Name of account where password shall be reset.
        Account name can be passed as one of the following:
-       <list type="bullet">
-         <item>sAMAccountName (without domain)</item>
-         <item>userPrincipalName</item>
-         <item>distinguishedName</item>
-      </list>
+         * sAMAccountName (without domain)
+         * userPrincipalName
+         * distinguishedName
     </param>
      <param name="WhenEffective">When password reset shall occur. Password will be reset during next PDS management cycle - see passwordManagementInterval in PDS config file.</param>
      <returns>Information about result of operation along with account name and DN</returns>
@@ -43,10 +76,8 @@
   <GetEnvironmentStats>
      <summary>
        Calls PDs to retrieve environment status for managed environment:
-       <list type="bullet">
-         <item>List of domains in each managed forest, along with number of managed machines and domain accounts in each domain</item>
-         <item>Overall status for each AD forest, including license expiration and consumption</item>
-      </list>
+       * List of domains in each managed forest, along with number of managed machines and domain accounts in each domain
+       * Overall status for each AD forest, including license expiration and consumption
     </summary>
      <returns>Environment status for the solution</returns>
      <remarks>
@@ -98,7 +129,7 @@
        <para>Call is not audited</para>
     </remarks>
   </GetSupportedKeySizes>
-  <IsKeyAdmin>
+  <IsPDSAdmin>
      <summary>
        Calls PDS to return information whether or not the caller is in Key Admin role on PDS
     </summary>
@@ -108,7 +139,7 @@
        <para>No specific permissions required</para>
        <para>Call is not audited</para>
     </remarks>
-  </IsKeyAdmin>
+  </IsPDSAdmin>
   <GetManagedAccountPassword>
      <summary>
        Retrieves password of managed account in given AD forest.
@@ -118,17 +149,14 @@
        <para>
         Forest must be marked as supported in PDS configuration.
          For local forest (forest where PDS is installed), you can pass null as parameter value
-        
       </para>
     </param>
      <param name="AccountName">
       Name of account where password shall be read.
        Account name can be passed as one of the following:
-       <list type="bullet">
-         <item>sAMAccountName (without domain)</item>
-         <item>userPrincipalName</item>
-         <item>distinguishedName</item>
-      </list>
+         * sAMAccountName (without domain)
+         * userPrincipalName
+         * distinguishedName
     </param>
      <param name="IncludePasswordHistory">Whether or not to include password history</param>
      <returns>Password, current password expiration time and optional password history</returns>
@@ -151,11 +179,9 @@
     </param>
      <param name="ComputerName">
       Name of computer where password of local admin account shall be reset. Name of the computer can be passed as one of the following:
-       <list type="bullet">
-         <item>Hostname, such as MyComputer</item>
-         <item>FQDN, such as mycomputer.mydomain.com</item>
-         <item>Distinguished name, such as cn=MyComputer,ou=MyComputers,dc=mydomain,dc=com</item>
-      </list>
+         * Hostname, such as MyComputer
+         * FQDN, such as mycomputer.mydomain.com
+         * Distinguished name, such as cn=MyComputer,ou=MyComputers,dc=mydomain,dc=com
     </param>
      <param name="IncludePasswordHistory">Whether or not to include password history</param>
      <param name="ComputerIsDeleted">
@@ -220,12 +246,12 @@
        <para>PDS also uses public key to encrypt password of managed domain account - ID of key to use is specified in PDS configuration file.</para>
     </summary>
      <param name="KeySize">
-      Specifies desired RSA key size
+      Specifies desired RSA key size<br/>
        Key size must be one of those allowed by PDS - see <see cref="GetSupportedKeySizes"/> method
     </param>
      <returns>Return public key of newly generated key pair, along with key ID assigned to newly generated key pair</returns>
      <remarks>
-       <para>Caller must have Key Admin role. For callers without role, AccessDenied exception is thrown. To find out, if caller has Key Admin role, call method <see cref="IsKeyAdmin"/>.</para>
+       <para>Caller must have Key Admin role. For callers without role, AccessDenied exception is thrown. To find out, if caller has Key Admin role, call method <see cref="IsPDSAdmin"/>.</para>
        <para>By default, Key Admin role is assigned to Enterprise Admins group and can be changed via PDS configuration file.</para>
        <para>Call is audited on PDS</para>
     </remarks>
