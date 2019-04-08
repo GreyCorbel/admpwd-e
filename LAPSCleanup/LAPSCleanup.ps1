@@ -1,3 +1,20 @@
+#This script analyzes permissions to Read/Reset/Uplad assword granted by LAPS PS module (Set-AdmPwdReadPasswordPermission, Set-AdmwdResetPasswordPermission, Set-AdmPwdComputerSelfPermission)
+#Optionally, script also removes permissions found for given user or group
+#Script analyzes delegated non-inherited permissions (does not show permissions inherited from upper level container)
+
+#Script is suitable for review of eisting permissions, or for removal of permissions in case you want to upgrade from L"APS to AdmPwd.E
+#Note: Script is specialized to work with LAPS permisions; AdmPwd.E permission model uses diferent permissions
+#  (only AdmPwd.E PDS permissions may be detected as ReadPassword permission by this script, so care must be taken when cleaning permissions so as not to break AdmPwd.E PDS permissions)
+
+#Usage:
+#Review permissions on a subtree (containers only):
+#   LapsCleanup.ps1 -DN 'ou=myOU,dc=myDomain,dc=com' -ShowProgress
+#Review permissions on a subtree (containers and computer accounts):
+#   LapsCleanup.ps1 -DN 'ou=myOU,dc=myDomain,dc=com' -ShowProgress -IncludeComputers
+#Review permissions on a subtree (containers only) and remove all LAPS permissions for account MyDomain\MyUser:
+#   LapsCleanup.ps1 -DN 'ou=myOU,dc=myDomain,dc=com' -ShowProgress -PrincipalToRemove MyDomain\MyUser
+
+
 Param
 (
     [Parameter(Mandatory=$true)]
