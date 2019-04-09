@@ -1,8 +1,8 @@
 # 
 # Schema extension definition for AdmPwd extension
 # New attributes:
-#	ms-MCS-AdmPwd - string containing the password
-#	ms-MCS-AdmPwdExpirationTime - 8 byte integer containing  UTC filetime of password expiration time
+# ms-MCS-AdmPwd - string containing the password
+# ms-MCS-AdmPwdExpirationTime - 8 byte integer containing  UTC filetime of password expiration time
 # ms-MCS-AdmPwdHistory - multivalued string containing the password history
 #
 # New classes:
