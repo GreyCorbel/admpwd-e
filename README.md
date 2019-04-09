@@ -3,6 +3,7 @@ This repository contains AdmPwd.E (formerly known as LAPS.E) sample client and s
 
 - Clients
 - Keystores
+- LAPS Cleanup tools
 
 More on projects:
 - Clients:
@@ -13,6 +14,8 @@ More on projects:
   - Contains source for AdmPwd.PDS.KeyStore.IKeyStore interface. This is interface required to implement when you want PDS to use it for key storage
   - Contains reference implementation of PDS keystore that stores keys in Azure KeyVault
   - Provided as reference implementation for other types of key stores, such as key stores based on HSM
+- LAPS Cleanup: 
+  - various Powershell scripts that help review and cleanup LAPS specific data in AD (e.g. permissions setup by delegation cmdlets), which may come useful when moving from LAPS to AdmPwd.E
 
 Repository also contains AdmPwd.E AD schema definition file (AdmPwd.E.ldf), so anyone can see what changes are required in AD schema for AdmPwd.E, and extend the schema manually, if needed.
 
