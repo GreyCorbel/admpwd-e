@@ -1,8 +1,8 @@
 # 
 # Schema extension definition for AdmPwd extension
 # New attributes:
-# ms-MCS-AdmPwd - string containing the password
-# ms-MCS-AdmPwdExpirationTime - 8 byte integer containing  UTC filetime of password expiration time
+#	ms-MCS-AdmPwd - string containing the password
+#	ms-MCS-AdmPwdExpirationTime - 8 byte integer containing  UTC filetime of password expiration time
 # ms-MCS-AdmPwdHistory - multivalued string containing the password history
 #
 # New classes:
@@ -12,6 +12,9 @@
 #  1 ... classes  
 #  2 ... attributes
 #  3 ... reserved for remediation of SLAM OID conflict
+#
+# Usage:
+#   ldifde -i -f AdmPwd.E.ldf -c "cn=X" "#schemaNamingContext" -v
 #
 # v 1.0, 16.5.2012, Jiri Formacek, Initial version
 # v 2.0, 16.2.2014, Jiri Formacek, Added ms-MCS-AdmPwdHistory
