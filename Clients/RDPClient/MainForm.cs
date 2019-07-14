@@ -105,12 +105,26 @@ namespace RDPClient
         {
             axRdpClient.Server = server;
             axRdpClient.AdvancedSettings2.RDPPort = port;
-            axRdpClient.AdvancedSettings7.EnableCredSspSupport = true;
-
+            axRdpClient.AdvancedSettings9.EnableCredSspSupport = true;
+            axRdpClient.AdvancedSettings9.AuthenticationLevel = 2;  //show credential window if fails
+            axRdpClient.AdvancedSettings9.PublicMode = true;    //do not cache user data on client
+            axRdpClient.AdvancedSettings9.BandwidthDetection = true;
+            
             axRdpClient.ConnectingText = "Connecting...";
             axRdpClient.ConnectedStatusText = $"Connected: {server}";
         }
 
+        public void SetOptions(RdpOptions opts)
+        {
+            if (opts.RedirectDevices)
+                axRdpClient.AdvancedSettings7.RedirectDevices = true;
+            if (opts.RedirectDrives)
+                axRdpClient.AdvancedSettings7.RedirectDrives = true;
+            if (opts.RedirectPrinters)
+                axRdpClient.AdvancedSettings7.RedirectPrinters = true;
+            if (opts.RedirectSmartCards)
+                axRdpClient.AdvancedSettings7.RedirectSmartCards = true;
+        }
         private void Form1_Shown(object sender, EventArgs e)
         {
             try
@@ -194,7 +208,18 @@ namespace RDPClient
                 Form aboutForm = new About();
                 aboutForm.ShowDialog(this);
             }
+        }
 
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+            //if (this.WindowState == FormWindowState.Maximized)
+            //{
+            //    axRdpClient.FullScreen = true;
+            //}
+            //else
+            //{
+            //    axRdpClient.FullScreen = false;
+            //}
         }
     }
 }

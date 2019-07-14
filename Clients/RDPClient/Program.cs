@@ -9,6 +9,14 @@ using AdmPwd.PDSUtils;
 
 namespace RDPClient
 {
+    public class RdpOptions
+    {
+        public bool RedirectDrives { get; set; }
+        public bool RedirectPrinters { get; set; }
+        public bool RedirectSmartCards { get; set; }
+        public bool RedirectDevices { get; set; }
+
+    }
     static class Program
     {
         /// <summary>
@@ -25,6 +33,7 @@ namespace RDPClient
             string domainName = null;
             ushort port = 3389;
 
+            var Options = new RdpOptions();
             foreach (string arg in args)
             {
                 if (arg.StartsWith("/user:", StringComparison.CurrentCultureIgnoreCase))
@@ -43,6 +52,34 @@ namespace RDPClient
                     continue;
                 }
 
+                if(arg.Equals("/RedirectDrives", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    Options.RedirectDrives = true;
+                    continue;
+                }
+                if (arg.Equals("/RedirectPrinters", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    Options.RedirectPrinters = true;
+                    continue;
+                }
+                if (arg.Equals("/RedirectSmartCards", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    Options.RedirectSmartCards = true;
+                    continue;
+                }
+                if (arg.Equals("/RedirectDevices", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    Options.RedirectDevices = true;
+                    continue;
+                }
+                if (arg.Equals("/RedirectAll", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    Options.RedirectDrives = true;
+                    Options.RedirectDevices = true;
+                    Options.RedirectPrinters = true;
+                    Options.RedirectSmartCards = true;
+                    continue;
+                }
                 if (arg.StartsWith("/?", StringComparison.CurrentCultureIgnoreCase))
                 {
                     Usage();
@@ -64,12 +101,12 @@ namespace RDPClient
                     string[] pairs = adminAccountName.Split('\\');
                     domainName = pairs[0];
                     adminAccountName = pairs[1];
-                    pwdInfo = PdsWrapper.GetManagedAccountPassword(null, adminAccountName, false);
+                    pwdInfo = PdsWrapper.GetPassword(null, adminAccountName, IdentityType.ManagedDomainAccount, false, false);
                 }
                 else if (adminAccountName.Contains('@'))
                 {
                     //upn
-                    pwdInfo = PdsWrapper.GetManagedAccountPassword(null, adminAccountName, false);
+                    pwdInfo = PdsWrapper.GetPassword(null, adminAccountName, IdentityType.ManagedDomainAccount, false, false);
                 }
                 else
                 {
@@ -80,7 +117,7 @@ namespace RDPClient
                         //default admin name
                         adminAccountName = "administrator";
                     }
-                    pwdInfo = PdsWrapper.GetLocalAdminPassword(null, server, false, false);
+                    pwdInfo = PdsWrapper.GetPassword(null, server, IdentityType.LocalComputerAdmin, false, false);
 
                 }
             }
@@ -102,6 +139,7 @@ namespace RDPClient
                 }
                 form.SetCredentials(adminAccountName, domainName, pwdInfo.Password);
                 form.SetServerName(server, port);
+                form.SetOptions(Options);
 
                 Application.Run(form);
 
@@ -116,7 +154,7 @@ namespace RDPClient
 
         static void Usage()
         {
-            MessageBox.Show("Parameters:\n/server:<server to connect> /user:<user@domain> [/port:<rdp port>]", "Usage", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Parameters:\n/server:<server to connect> /user:<user@domain> [/port:<rdp port>] [/redirectDrives] [/redirectPrinters] [/redirectSmartCards] [/redirectDevices] [/redirectAll]", "Usage", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

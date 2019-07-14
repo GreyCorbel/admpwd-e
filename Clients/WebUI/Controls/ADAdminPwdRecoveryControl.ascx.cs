@@ -86,7 +86,7 @@ namespace AdmPwd.Portal.Controls
             {
                 try
                 {
-                    PasswordInfo data = PDSUtils.PdsWrapper.GetLocalAdminPassword(this.cboForestNames.Text, this.textComputerName.Text, isPasswordHistoryVisible, false); //or false if we don't need password history
+                    PasswordInfo data = PDSUtils.PdsWrapper.GetPassword(this.cboForestNames.Text, this.textComputerName.Text, IdentityType.LocalComputerAdmin,  isPasswordHistoryVisible, false); //or false if we don't need password history
                     if (!String.IsNullOrEmpty(data.Password))
                     {
                         this.btnRecoverySubmit.Visible = false;
@@ -187,7 +187,7 @@ namespace AdmPwd.Portal.Controls
                 {
                     try
                     {
-                        rslt = PDSUtils.PdsWrapper.ResetLocalAdminPassword(this.cboForestNames.Text, this.textComputerName.Text, newExpirationDate.ToUniversalTime());
+                        rslt = PDSUtils.PdsWrapper.ResetPassword(this.cboForestNames.Text, this.textComputerName.Text, IdentityType.LocalComputerAdmin, newExpirationDate.ToUniversalTime());
                     }
                     catch (AdmPwd.Types.PDSException ex)
                     {

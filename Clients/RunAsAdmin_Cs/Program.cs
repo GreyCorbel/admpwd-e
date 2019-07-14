@@ -56,7 +56,7 @@ namespace RunAsAdmin
             }
             try
             {
-                PasswordInfo pwdInfo = PdsWrapper.GetManagedAccountPassword(null, adminAccountName, false);
+                PasswordInfo pwdInfo = PdsWrapper.GetPassword(null, adminAccountName, IdentityType.ManagedDomainAccount, false, false);
 
                 StartupInfo si = new StartupInfo();
                 si.cb = Marshal.SizeOf(si);

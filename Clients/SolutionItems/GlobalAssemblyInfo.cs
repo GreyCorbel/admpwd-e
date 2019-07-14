@@ -13,11 +13,11 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("7.5.5.0")]
-[assembly: AssemblyFileVersion("7.5.5.0")]
+[assembly: AssemblyVersion("7.7.0.0")]
+[assembly: AssemblyFileVersion("7.7.0.0")]
 
 [assembly: AssemblyCompany("Jiri Formacek, GreyCorbel Solutions")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyCopyright("Jiri Formacek, GreyCorbel Solutions")]
 [assembly: AssemblyTrademark("")]
 
 #if DEBUG

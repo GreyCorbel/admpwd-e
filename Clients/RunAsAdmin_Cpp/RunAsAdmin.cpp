@@ -79,9 +79,9 @@ int main(array<System::String ^> ^args)
 		PasswordInfo^ pi;
 		if (useLocalAccount)
 			//retrieve password for local computer
-			pi = PdsWrapper::GetLocalAdminPassword(nullptr, computerName, false, false);
+			pi = PdsWrapper::GetPassword(nullptr, computerName, IdentityType::LocalComputerAdmin, false, false);
 		else
-			pi = PdsWrapper::GetManagedAccountPassword(nullptr, adminAccountName, false);
+			pi = PdsWrapper::GetPassword(nullptr, adminAccountName, IdentityType::ManagedDomainAccount, false, false);
 
 		//run desired process
 		pin_ptr<const wchar_t> _adminAccount = PtrToStringChars(adminAccountName);

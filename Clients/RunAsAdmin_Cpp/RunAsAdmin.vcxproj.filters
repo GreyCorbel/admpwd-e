@@ -14,7 +14,7 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="Docs">
-      <UniqueIdentifier>{7bf5e00d-cf69-4b4c-9b80-35098bd0dc5c}</UniqueIdentifier>
+      <UniqueIdentifier>{01f2a7d1-ca59-4e38-a58e-53cf02d9a67a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -51,6 +51,9 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="Docs\PdsWrapper.xml">
+      <Filter>Docs</Filter>
+    </Xml>
+    <Xml Include="Docs\PDSConfigWrapper.xml">
       <Filter>Docs</Filter>
     </Xml>
   </ItemGroup>
