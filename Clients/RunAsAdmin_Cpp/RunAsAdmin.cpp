@@ -23,7 +23,6 @@ int main(array<System::String ^> ^args)
 		if (arg->StartsWith(L"/user:", StringComparison::CurrentCultureIgnoreCase))
 		{
 			adminAccountName = arg->Substring(6);
-			useLocalAccount = false;
 			continue;
 		}
 		if (arg->StartsWith(L"/path:", StringComparison::CurrentCultureIgnoreCase))

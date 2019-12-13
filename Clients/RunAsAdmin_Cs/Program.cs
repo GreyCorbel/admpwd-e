@@ -42,21 +42,37 @@ namespace RunAsAdmin
                     return;
                 }
             }
+
             if(adminAccountName==null || pathToExecutable==null)
             {
                 Usage();
                 return;
             }
+            IdentityType accountType = IdentityType.ManagedDomainAccount;
 
             if (adminAccountName.Contains("\\"))
             {
                 string[] pairs = adminAccountName.Split('\\');
                 domainName = pairs[0];
                 adminAccountName = pairs[1];
+                if(domainName == ".")
+                    accountType = IdentityType.LocalComputerAdmin;
             }
+
             try
             {
-                PasswordInfo pwdInfo = PdsWrapper.GetPassword(null, adminAccountName, IdentityType.ManagedDomainAccount, false, false);
+                PasswordInfo pwdInfo = null;
+                switch (accountType)
+                {
+                    case IdentityType.ManagedDomainAccount:
+                        pwdInfo = PdsWrapper.GetPassword(null, adminAccountName, accountType, false, false);
+                        break;
+                    default:
+                        pwdInfo = PdsWrapper.GetPassword(null, System.Environment.GetEnvironmentVariable("COMPUTERNAME"), accountType, false, false);
+                        break;
+                }
+                if (pwdInfo == null)
+                    return;
 
                 StartupInfo si = new StartupInfo();
                 si.cb = Marshal.SizeOf(si);
@@ -92,6 +108,9 @@ namespace RunAsAdmin
             Console.WriteLine("");
             Console.WriteLine("Runs command prompt as domain user without creating local profile and without caching the password on local machine:");
             Console.WriteLine("  RunAsAdmin /path:%SystemRoot%\\system32\\cmd.exe /user:mydomain\\myaccount /noLocalProfile");
+            Console.WriteLine("");
+            Console.WriteLine("Runs command prompt as local computer admin");
+            Console.WriteLine("  RunAsAdmin /path:%SystemRoot%\\system32\\cmd.exe /user:.\\administrator");
             Console.WriteLine("");
 
         }
