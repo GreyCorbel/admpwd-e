@@ -194,5 +194,163 @@
       <para>Call is audited</para>
     </remarks>
   </RemoveManagedAccountsContainer>
+  <TransferPdsAdminRole>
+    <summary>
+      Transfers PDS Admin role to security principal (user or group)
+    </summary>
+    <param name="Pds">
+      <para>Identifies PDS instance to work with.</para>
+      <para>Important: If operating more intances of PDS, configuration change must be performed on each of them to ensure configuration consistency.</para>
+    </param>
+    <param name="NewRoleHolder">
+      Name of new holder of PDS Admin role. Should include domain name.
+    </param>
+    <returns></returns>
+    <remarks>
+      <para>PDS Admin role is required to successfully call this method</para>
+      <para>Call is audited</para>
+    </remarks>
+  </TransferPdsAdminRole>
+  <UpdateManagedAccountsParameters>
+    <summary>
+      Updates global configuration of managed domain accounts processing.<br/>
+      Note: Currently, only global parameter supported is interval of scanning of managed domain accounts for password expiration.
+    </summary>
+    <param name="Pds">
+      <para>Identifies PDS instance to work with.</para>
+      <para>Important: If operating more intances of PDS, configuration change must be performed on each of them to ensure configuration consistency.</para>
+    </param>
+    <param name="ManagementInterval">
+      Interval of scanning of managed domain accounts for password expiration.
+    </param>
+    <returns></returns>
+    <remarks>
+      <para>PDS Admin role is required to successfully call this method</para>
+      <para>Call is audited</para>
+    </remarks>
+  </UpdateManagedAccountsParameters>
+  <GetManagedAccountsParameters>
+    <summary>
+      Returns global configuration of managed domain accounts processing.<br/>
+      Note: Currently, only global parameter supported is interval of scanning of managed domain accounts for password expiration.
+    </summary>
+    <param name="Pds">
+      Identifies PDS instance to work with.
+    </param>
+    <returns>Global configuration of managed domain accounts processing.</returns>
+    <remarks>
+    </remarks>
+  </GetManagedAccountsParameters>
+  <GetDnsParameters>
+    <summary>
+      Returns parameters of DNS registration for PDS autodiscover SRV records.
+    </summary>
+    <param name="Pds">
+      Identifies PDS instance to work with.
+    </param>
+    <returns>
+      <see cref="DnsParameters"/> object.
+    </returns>
+    <remarks>
+    </remarks>
+  </GetDnsParameters>
+  <UpdateDnsParameters>
+    <summary>
+      Updates parameters of DNS registration for PDS autodiscover SRV records.
+    </summary>
+    <param name="Pds">
+      <para>Identifies PDS instance to work with.</para>
+      <para>Important: If operating more intances of PDS, configuration change must be performed on each of them to ensure configuration consistency.</para>
+    </param>
+    <param name="Priority">Priority of SRV record. Null means default, which is 100.</param>
+    <param name="RegistrationInterval">How often PDS service re-registers autodiscover record to prevent its expiration. Null means default, which is 86400 seconds (1 day).</param>
+    <param name="Ttl">Time-to-live for registered SRV record. Null means default, which is 1200 seconds (20 minutes)</param>
+    <param name="UnregisterOnShutdown">Whether or not the SRV record shall be unregistered then services stops, to prevent autodiscover records pointing to non-operating PDS instance. Null means default, which is 'true'</param>
+    <param name="Weight">Weight of registered SRV record.<br/>
+    Note: Weight is not used by the solution.
+    </param>
+    <returns>
+    </returns>
+    <remarks>
+      <para>PDS Admin role is required to successfully call this method</para>
+      <para>Call is audited</para>
+    </remarks>
+  </UpdateDnsParameters>
+  <UpdateAccessControlParameters>
+    <summary>
+      Updates parameters of access control process for password reads and resets.
+    </summary>
+    <param name="Pds">
+      <para>Identifies PDS instance to work with.</para>
+      <para>Important: If operating more intances of PDS, configuration change must be performed on each of them to ensure configuration consistency.</para>
+    </param>
+    <param name="HonorAllExtendedRightsPermission">Whether 'All extended rights' permission also includes 'Read password' and 'Reset password' permission.Null means default, which is 'false'.</param>
+    <param name="HonorFullControlPermission">Whether 'Full control' permission also includes 'Read password' and 'Reset password' permission.Null means default, which is 'false'.</param>
+    <param name="HonorLocalGroupsFromRemoteComputerDomain">
+      <para>
+        Whether PDS also evaluates membership in local groups from remote domain.
+      </para>
+      <para>
+        Consider the following scenario:
+        <list>
+          <item>PDS is installed in forest domain A</item>
+          <item>Computer account X we want know admin password for is in forest domain B</item>
+          <item>User U who wants to know admin password for computer X is also in forest domain B</item>
+          <item>User U is member of Domain local group DLG</item>
+          <item>Permission to read the admin password for computer X is delegated to group DLG</item>
+        </list>
+        In this case, when PDS is performing access check, it normally does NOT see user U being member of group DLG (because membership in Domain Local groups is not propagated to other domains in forest), and because of that, it replies with AccessDenied error. Setting this parameter to true makes PDS to perform direct lookup for local group membership of user in his home domain to make sure that complete membership is evaluated. 
+        This additional lookup consumes PDS service resources and requires direct connection between PDS and domain controller of user's domain, so delegation using domain Local groups in multi-forest domains should be avoided.
+      </para>
+    </param>
+    <returns>
+    </returns>
+    <remarks>
+      <para>PDS Admin role is required to successfully call this method</para>
+      <para>Call is audited</para>
+    </remarks>
+  </UpdateAccessControlParameters>
+  <GetAccessControlsParameters>
+    <summary>
+      Returns parameters of access control process for password reads and resets.
+    </summary>
+    <param name="Pds">
+      Identifies PDS instance to work with.
+    </param>
+    <returns>
+      <see cref="AccessControlParameters"/> object.
+    </returns>
+    <remarks>
+    </remarks>
+  </GetAccessControlsParameters>
+  <GetLicenseParameters>
+    <summary>
+      Returns parameters of current license, including path to license file.
+    </summary>
+    <param name="Pds">
+      Identifies PDS instance to work with.
+    </param>
+    <returns>
+      <see cref="LicenseParameters"/> object.
+    </returns>
+    <remarks>
+    </remarks>
+  </GetLicenseParameters>
+  <UpdateLicenseFilePath>
+    <summary>
+      Updates path to license file.
+    </summary>
+    <param name="Pds">
+      Identifies PDS instance to work with.
+    </param>
+    <param name="FilePath">
+      Absolute or relative path to license file that Pds instance shall use.
+    </param>
+    <returns>
+      <see cref="LicenseParameters"/> object.
+    </returns>
+    <remarks>
+    </remarks>
+  </UpdateLicenseFilePath>
 
 </PdsConfigWrapper>
