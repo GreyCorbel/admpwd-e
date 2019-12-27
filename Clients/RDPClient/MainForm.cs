@@ -29,6 +29,8 @@ namespace RDPClient
     {
         FormWindowState LastWindowState = FormWindowState.Normal;
         Size LastWindowsSize = new Size(0, 0);
+        string Server;
+        string UserName;
 
         #region P-Invoke
         // P/Invoke constants
@@ -74,8 +76,15 @@ namespace RDPClient
         public void SetCredentials(string userName, string domain, string password)
         {
             axRdpClient.UserName = userName;
-            if(domain!=null)
+            if (domain != null)
+            {
                 axRdpClient.Domain = domain;
+                this.UserName = $"{domain}\\{userName}";
+            }
+            else
+            {
+                this.UserName = userName;
+            }
             var secure = (IMsTscNonScriptable)axRdpClient.GetOcx();
             secure.ClearTextPassword = password;
         }
@@ -103,6 +112,8 @@ namespace RDPClient
         }
         public void SetServerName(string server, ushort port)
         {
+            Server = server;
+
             axRdpClient.Server = server;
             axRdpClient.AdvancedSettings2.RDPPort = port;
             axRdpClient.AdvancedSettings9.EnableCredSspSupport = true;
@@ -130,7 +141,7 @@ namespace RDPClient
             try
             {
                 axRdpClient.Connect();
-                this.Text = $"RDP: {axRdpClient.Server}";
+                this.Text = $"RDP: {Server} ({UserName})";
                 LastWindowsSize = this.ClientSize;
             }
             catch (Exception ex)
@@ -155,7 +166,6 @@ namespace RDPClient
                 axRdpClient.Disconnect();
 
         }
-
 
         private void Form1_ResizeEnd(object sender, EventArgs e)
         {
