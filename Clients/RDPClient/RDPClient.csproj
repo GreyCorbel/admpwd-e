@@ -35,8 +35,8 @@
     <ApplicationIcon>rdp.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AdmPwd.PDSWrapper, Version=7.7.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Greycorbel.AdmPwd-E.PDSWrapper.7.7.1\lib\net45\AdmPwd.PDSWrapper.dll</HintPath>
+    <Reference Include="AdmPwd.PDSWrapper, Version=7.7.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Greycorbel.AdmPwd-E.PDSWrapper.7.7.2\lib\net45\AdmPwd.PDSWrapper.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -113,6 +113,15 @@
       <VersionMinor>0</VersionMinor>
       <Lcid>0</Lcid>
       <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="stdole">
+      <Guid>{00020430-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
