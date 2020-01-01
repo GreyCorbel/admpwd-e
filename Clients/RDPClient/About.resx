@@ -370,7 +370,7 @@
   <data name="textBox1.Text" xml:space="preserve">
     <value>Simple RDP Client with automatic password retrieval.
 
-© 2018 - 2020 Jiri FOrmacek, GreyCorbel Solutions</value>
+© 2018 - 2020 Jiri Formacek, GreyCorbel Solutions</value>
   </data>
   <data name="&gt;&gt;textBox1.Name" xml:space="preserve">
     <value>textBox1</value>
