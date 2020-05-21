@@ -8,8 +8,9 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>RDPClient</RootNamespace>
     <AssemblyName>RDPClient</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,8 +36,8 @@
     <ApplicationIcon>rdp.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AdmPwd.PDSWrapper, Version=7.7.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Greycorbel.AdmPwd-E.PDSWrapper.7.7.2\lib\net45\AdmPwd.PDSWrapper.dll</HintPath>
+    <Reference Include="AdmPwd.PDSWrapper, Version=7.7.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Greycorbel.AdmPwd-E.PDSWrapper.7.7.3\lib\net45\AdmPwd.PDSWrapper.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -83,6 +84,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -127,8 +129,6 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app.ico" />
-    <Content Include="app1.ico" />
     <Content Include="Docs\PDSConfigWrapper.xml" />
     <Content Include="Docs\PdsWrapper.xml" />
     <Content Include="rdp.ico" />

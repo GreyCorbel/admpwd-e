@@ -11,12 +11,14 @@ namespace RDPClient
 {
     public class RdpOptions
     {
+        
         public bool RedirectDrives { get; set; }
         public bool RedirectPrinters { get; set; }
         public bool RedirectSmartCards { get; set; }
         public bool RedirectDevices { get; set; }
-
     }
+
+
     static class Program
     {
         /// <summary>
