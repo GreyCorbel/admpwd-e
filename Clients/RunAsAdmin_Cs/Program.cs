@@ -1,63 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using AdmPwd.PDSUtils;
 using AdmPwd.Types;
+using System.CommandLine;
+using System.CommandLine.Invocation;
 
 namespace RunAsAdmin
 {
     class Program
     {
-        static void Main(string[] args)
+        static LogonFlags dwLogonFlags = LogonFlags.LOGON_WITH_PROFILE;
+        static IdentityType accountType = IdentityType.ManagedDomainAccount;
+
+        static int Worker(Params commandParams)
         {
-            string adminAccountName=null;
-            string pathToExecutable=null;
             string domainName = null;
-
-            LogonFlags dwLogonFlags = LogonFlags.LOGON_WITH_PROFILE;
-
-            foreach (string arg in args)
+            if (commandParams.User.Contains("\\"))
             {
-                if (arg.StartsWith("/user:", StringComparison.CurrentCultureIgnoreCase))
-                {
-                    adminAccountName = arg.Substring(6);
-                    continue;
-                }
-                if (arg.StartsWith("/path:", StringComparison.CurrentCultureIgnoreCase))
-                {
-                    pathToExecutable = arg.Substring(6);
-                    continue;
-                }
-                if (arg.StartsWith("/noLocalProfile", StringComparison.CurrentCultureIgnoreCase))
-                {
-                    dwLogonFlags = LogonFlags.LOGON_NETCREDENTIALS_ONLY;
-                    continue;
-                }
-                if (arg.StartsWith("/?", StringComparison.CurrentCultureIgnoreCase))
-                {
-                    Usage();
-                    return;
-                }
-            }
-
-            if(adminAccountName==null || pathToExecutable==null)
-            {
-                Usage();
-                return;
-            }
-            IdentityType accountType = IdentityType.ManagedDomainAccount;
-
-            if (adminAccountName.Contains("\\"))
-            {
-                string[] pairs = adminAccountName.Split('\\');
+                string[] pairs = commandParams.User.Split('\\');
                 domainName = pairs[0];
-                adminAccountName = pairs[1];
-                if(domainName == ".")
+                commandParams.User = pairs[1];
+                if (domainName == ".")
                     accountType = IdentityType.LocalComputerAdmin;
             }
+            if (commandParams.NoLocalProfile)
+                dwLogonFlags = LogonFlags.LOGON_NETCREDENTIALS_ONLY;
 
             try
             {
@@ -65,54 +32,83 @@ namespace RunAsAdmin
                 switch (accountType)
                 {
                     case IdentityType.ManagedDomainAccount:
-                        pwdInfo = PdsWrapper.GetPassword(null, adminAccountName, accountType, false, false);
+                        pwdInfo = PdsWrapper.GetPassword(null, commandParams.User, accountType, false, false);
                         break;
                     default:
                         pwdInfo = PdsWrapper.GetPassword(null, System.Environment.GetEnvironmentVariable("COMPUTERNAME"), accountType, false, false);
                         break;
                 }
-                if (pwdInfo == null)
-                    return;
 
                 StartupInfo si = new StartupInfo();
                 si.cb = Marshal.SizeOf(si);
                 ProcessInformation pi = new ProcessInformation();
-                bool rslt = Native.CreateProcessWithLogonW(adminAccountName, domainName, pwdInfo.Password, (uint)dwLogonFlags, null, pathToExecutable, (uint)(CreationFlags.CREATE_NEW_PROCESS_GROUP | CreationFlags.ABOVE_NORMAL_PRIORITY_CLASS), 0, null, ref si, out pi);
+                bool rslt = Native.CreateProcessWithLogonW(commandParams.User, domainName, pwdInfo.Password, (uint)dwLogonFlags, null, commandParams.ProgramPath, (uint)(CreationFlags.CREATE_NEW_PROCESS_GROUP | CreationFlags.ABOVE_NORMAL_PRIORITY_CLASS), 0, null, ref si, out pi);
                 if (!rslt)
                 {
                     throw new System.ComponentModel.Win32Exception(Native.GetLastError());
                 }
             }
-            catch(PDSException ex)
+            catch (PDSException ex)
             {
                 Console.WriteLine($"ERROR: {ex.Message}");
+                return -1;
             }
-            catch(System.ComponentModel.Win32Exception ex)
+            catch (System.ComponentModel.Win32Exception ex)
             {
                 Console.WriteLine($"ERROR: Failed to start process, Win32 return code: {ex.NativeErrorCode.ToString("X2")}");
+                return -2;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"ERROR: {ex.Message}");
+                return -3;
             }
+
+            return 0;
         }
 
-        static void Usage()
+        static int Main(string[] args)
         {
-            Console.WriteLine("Usage:");
-            Console.WriteLine("RunAsAdmin.exe /path:<path to executable to run> [/user:<name of admin account>] [/noLocalProfile]");
-            Console.WriteLine("");
-            Console.WriteLine("EXAMPLES:");
-            Console.WriteLine("Runs command prompt as domain account:");
-            Console.WriteLine("  RunAsAdmin /path:%SystemRoot%\\system32\\cmd.exe /user:myaccount@mydomain.com");
-            Console.WriteLine("");
-            Console.WriteLine("Runs command prompt as domain user without creating local profile and without caching the password on local machine:");
-            Console.WriteLine("  RunAsAdmin /path:%SystemRoot%\\system32\\cmd.exe /user:mydomain\\myaccount /noLocalProfile");
-            Console.WriteLine("");
-            Console.WriteLine("Runs command prompt as local computer admin");
-            Console.WriteLine("  RunAsAdmin /path:%SystemRoot%\\system32\\cmd.exe /user:.\\administrator");
-            Console.WriteLine("");
+            //model command line options
+            var rootCommand = new RootCommand("Sample replacement of Windows RunAs tool, without the need to enter the password of user to run under. " +
+                "Password is retrieved automatically behind the scenes via AdmPwd.E SDK")
+            {
+                new Option(
+                    new string[] {"--user","-u" },
+                    "User name to use as security context. Allowed formats: domain\\user, user@domain.com or .\\user")
+                    {
+                        Argument= new Argument()
+                        {
+                            Arity = new ArgumentArity(1,1)
+                        },
+                        IsRequired=true
+                    },
+                new Option(
+                    new string[] {"--program-path","-p" },
+                    "Path to executable to be started")
+                    {
+                        Argument= new Argument() 
+                        {
+                            Arity = new ArgumentArity(1,1)
+                        },
+                        IsRequired=true
+                    },
+                new Option(
+                    new string[] {"--no-local-profile","-nlp" },
+                    "When specified, profile for given user is not created and no user information is stored on machine") 
+                    {
+                        Argument= new Argument()
+                        {
+                            Arity = new ArgumentArity(0,1)
+                        },
+                        IsRequired=false
+                    }
+            };
 
+            //register worker to execute for command line
+            rootCommand.Handler = CommandHandler.Create<Params>(Worker);
+
+            return rootCommand.Invoke(args);
         }
     }
 }

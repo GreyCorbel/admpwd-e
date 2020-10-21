@@ -194,6 +194,17 @@
       <para>Call is audited</para>
     </remarks>
   </RemoveManagedAccountsContainer>
+  <GetPdsAdminRoleName>
+    <summary>
+      Calls PDS to retrieve name of AD group that implements PDS Admin role. Members of the group hold PDS Admin role and can manage configuration of PDS.
+    </summary>
+    <returns>Returns name of AD group that is configured as PDS Admin role group</returns>
+    <remarks>
+      <para>By default, this role is held by Enterprise Admins group. Role assignment can be changed in PDS configuration file.</para>
+      <para>No specific permissions required</para>
+      <para>Call is not audited</para>
+    </remarks>
+  </GetPdsAdminRoleName>
   <TransferPdsAdminRole>
     <summary>
       Transfers PDS Admin role to security principal (user or group)

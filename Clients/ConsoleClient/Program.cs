@@ -20,7 +20,8 @@ namespace ConsoleClient
 
                     Console.Write("Resetting password ... ");
 
-                    PdsWrapper.ResetPassword(ForestName: string.Empty, Identity: args[0], Type: IdentityType.LocalComputerAdmin, WhenEffective: DateTime.Now);
+                    //request immediate password reset
+                    PdsWrapper.ResetPassword(ForestName: string.Empty, Identity: args[0], Type: IdentityType.LocalComputerAdmin, WhenEffective:DateTime.MinValue);
                     Console.WriteLine("done");
                 }
                 else
